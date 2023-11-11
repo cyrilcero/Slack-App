@@ -1,7 +1,9 @@
 function LoginPage() {
   return (
-    <div>LoginPage</div>
-  )
+    <>
+      <h1 className="text-3xl flex place-items-center">Hello World</h1>
+    </>
+  );
 }
 
-export default LoginPage
+export default LoginPage;
