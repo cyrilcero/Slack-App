@@ -22,7 +22,7 @@ function LoginForm() {
           type="text"
           name="username"
           id="username"
-          className="w-full text-black bg-white border-spacing-4 border-2 border-solid rounded-md p-1 mb-2"
+          className="w-full text-black bg-white border-spacing-4 border-2 border-none rounded-lg p-2 mb-2"
         />
         <label htmlFor="" className="w-full text-black py-1 font-semibold">
           Password
@@ -31,9 +31,9 @@ function LoginForm() {
           type="password"
           name="password"
           id="password"
-          className="w-full text-black bg-white border-spacing-4 border-2 border-solid rounded-md p-1 mb-2"
+          className="w-full text-black bg-white border-spacing-4 border-2 border-none rounded-lg p-2 mb-2"
         />
-        <button type="submit" className="w-full bg-Aubergine rounded-lg p-2 font-semibold">Login</button>
+        <button type="submit" className="w-full bg-Aubergine text-White rounded-lg p-2 font-semibold mt-4" formAction="submit">Login</button>
       </Form>
     </div>
   );
