@@ -2,7 +2,7 @@ import React from 'react'
 
 function SigninPage() {
   return (
-    <div>SigninPage</div>
+    <div className='text-body text-black'>SigninPage</div>
   )
 }
 

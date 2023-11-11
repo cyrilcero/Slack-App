@@ -8,11 +8,6 @@
 
 :root {
   font-family: "Lato", sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
   background-color: #ffffff;
   
   font-synthesis: none;
@@ -22,12 +17,11 @@
   -webkit-text-size-adjust: 100%;
 }
 
-body {
-  margin: 0;
+.container {
+  /* width: 100%; */
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
 }
 
 /* 
