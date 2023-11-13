@@ -57,7 +57,16 @@ function LoginForm() {
       setData(data);
       setLocalStorage("LoginData", data);
       setLocalStorage("headerData", header_data);
-      toastSuccess("Login Success");
+      /**
+       * TODO: add error validator
+       */
+
+      if (data.success === false) {
+        toastError(data.errors[0]);
+      } else {
+        toastSuccess("Successful Login");
+      }
+
       setInput({ email: "", password: "" });
     } catch (error) {
       setError(error);

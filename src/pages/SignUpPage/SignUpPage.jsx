@@ -53,8 +53,13 @@ function SignUpForm() {
       /**
        * TODO: add error validator
        */
+      if (data.status === "error") {
+        toastError(data.errors.full_messages[0]);
+      } else {
+        toastSuccess("Account Created Successfully");
+      }
       setLocalStorage("SignUpData", data);
-      toastSuccess("Account Created");
+      // toastSuccess("Account Created");
       setInput({ email: "", password: "", password_confirmation: "" });
     } catch (error) {
       setError(error);
