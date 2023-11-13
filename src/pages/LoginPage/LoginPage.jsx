@@ -9,7 +9,7 @@ function LoginPage() {
   return (
     <>
       <h1 className="flex w-full justify-center items-center text-body text-SlackGreen">
-        Hello World
+        Why are you here? 🤔
       </h1>
       <div className="flex flex-col w-full justify-center items-center">
         <LoginForm />
