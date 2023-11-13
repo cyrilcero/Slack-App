@@ -9,9 +9,9 @@ function LoginPage() {
   return (
     <>
       <h1 className="flex w-full justify-center items-center text-body text-SlackGreen">
-        Why are you here? 🤔
+        Why are you here? 🤔 *Under Development*
       </h1>
-      <div className="flex flex-col w-full justify-center items-center">
+      <div className="flex flex-col gap-4 w-full justify-center items-center">
         <LoginForm />
         <SignUpPage />
       </div>
