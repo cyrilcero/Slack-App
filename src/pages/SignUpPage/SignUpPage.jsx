@@ -79,6 +79,7 @@ function SignUpForm() {
       className="flex flex-col w-1/3 justify-center items-center bg-Horchata p-6 rounded-lg"
     >
       <InputField
+        placeholder="email@gmail.com"
         label="Email Address"
         type="text"
         name="email"
@@ -86,6 +87,7 @@ function SignUpForm() {
         handleInputChange={handleInputChange}
       />
       <InputField
+        placeholder="******"
         label="Password"
         type="password"
         name="password"
@@ -93,6 +95,7 @@ function SignUpForm() {
         handleInputChange={handleInputChange}
       />
       <InputField
+        placeholder="******"
         label="Re-type Password"
         type="password"
         name="password_confirmation"

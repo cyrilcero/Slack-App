@@ -1,4 +1,11 @@
-export function InputField({ label, type, name, value, handleInputChange }) {
+export function InputField({
+  placeholder,
+  label,
+  type,
+  name,
+  value,
+  handleInputChange,
+}) {
   return (
     <>
       <label htmlFor={name} className="w-full text-black pb-1 font-semibold">
@@ -6,6 +13,7 @@ export function InputField({ label, type, name, value, handleInputChange }) {
       </label>
       <input
         onChange={handleInputChange}
+        placeholder={placeholder}
         type={type}
         name={name}
         value={value}

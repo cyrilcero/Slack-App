@@ -85,6 +85,7 @@ function LoginForm() {
       className="flex flex-col w-1/3 justify-center items-center bg-Horchata p-6 rounded-lg"
     >
       <InputField
+        placeholder="email@gmail.com"
         label="Email"
         type="text"
         name="email"
@@ -92,6 +93,7 @@ function LoginForm() {
         handleInputChange={handleInputChange}
       />
       <InputField
+        placeholder="******"
         label="Password"
         type="password"
         name="password"
