@@ -3,6 +3,7 @@ import { InputField } from "./components/InputField";
 import { useState, useEffect } from "react";
 import SignUpPage from "../SignUpPage/SignUpPage";
 import { toastError, toastSuccess } from "../../utils/toasts";
+import { setLocalStorage } from "../../utils/localstorage";
 
 function LoginPage() {
   return (
@@ -38,9 +39,16 @@ function LoginForm() {
         },
         body: JSON.stringify(formData),
       });
-
+      const header_data = {
+        uid: response.headers.get("uid"),
+        accessToken: response.headers.get("access-token"),
+        expiry: response.headers.get("expiry"),
+        client: response.headers.get("client"),
+      };
       const data = await response.json();
       setData(data);
+      setLocalStorage("LoginData", data);
+      setLocalStorage("headerData", header_data);
       toastSuccess("Login Success");
     } catch (error) {
       setError(error);
@@ -50,6 +58,7 @@ function LoginForm() {
 
   useEffect(() => {
     console.log(data);
+    // console.log(data);
     console.log(error);
   }, [data, error]);
 

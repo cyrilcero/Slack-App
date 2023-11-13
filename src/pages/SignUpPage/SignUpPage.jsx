@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Form } from "react-router-dom";
 import { InputField } from "../LoginPage/components/InputField";
 import { toastError, toastSuccess } from "../../utils/toasts";
+import { setLocalStorage } from "../../utils/localstorage";
 
 function SignUpPage() {
   return (
@@ -37,6 +38,7 @@ function SignUpForm() {
 
       const data = await response.json();
       setData(data);
+      setLocalStorage("SignUpData", data);
       toastSuccess("Account Created");
     } catch (error) {
       setError(error);
