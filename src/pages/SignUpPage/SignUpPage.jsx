@@ -15,16 +15,28 @@ function SignUpPage() {
 export default SignUpPage;
 
 function SignUpForm() {
+  const [input, setInput] = useState({
+    email: "",
+    password: "",
+    password_confirmation: "",
+  });
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
-  const handleAccountCreation = async (e) => {
+  function handleInputChange(e) {
+    setInput((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  }
+
+  async function handleAccountCreation(e) {
     e.preventDefault();
 
     const formData = {
-      email: e.target.email.value,
-      password: e.target.password.value,
-      password_confirmation: e.target.password_confirmation.value,
+      email: input.email,
+      password: input.password,
+      password_confirmation: input.password_confirmation,
     };
 
     try {
@@ -38,30 +50,49 @@ function SignUpForm() {
 
       const data = await response.json();
       setData(data);
+      /**
+       * TODO: add error validator
+       */
       setLocalStorage("SignUpData", data);
       toastSuccess("Account Created");
+      setInput({ email: "", password: "", password_confirmation: "" });
     } catch (error) {
       setError(error);
       toastError("Error");
+      setInput({ email: "", password: "", password_confirmation: "" });
     }
-  };
+  }
 
   useEffect(() => {
     console.log(data);
-    console.log(error);
-  }, [data, error]);
+    console.log("Input", input);
+  }, [data, input]);
 
   return (
     <Form
       onSubmit={handleAccountCreation}
       className="flex flex-col w-1/3 justify-center items-center bg-Horchata p-6 rounded-lg"
     >
-      <InputField label={"Email Address"} name={"email"} type={"text"} />
-      <InputField label={"Password"} name={"password"} type={"password"} />
       <InputField
-        label={"Re-type Password"}
-        name={"password_confirmation"}
-        type={"password"}
+        label="Email Address"
+        type="text"
+        name="email"
+        value={input.email}
+        handleInputChange={handleInputChange}
+      />
+      <InputField
+        label="Password"
+        type="password"
+        name="password"
+        value={input.password}
+        handleInputChange={handleInputChange}
+      />
+      <InputField
+        label="Re-type Password"
+        type="password"
+        name="password_confirmation"
+        value={input.password_confirmation}
+        handleInputChange={handleInputChange}
       />
       <button
         type="submit"

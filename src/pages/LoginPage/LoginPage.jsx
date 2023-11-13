@@ -20,15 +20,23 @@ function LoginPage() {
 }
 
 function LoginForm() {
+  const [input, setInput] = useState({ email: "", password: "" });
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
-  const handleLogin = async (e) => {
+  function handleInputChange(e) {
+    setInput((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  }
+
+  async function handleLogin(e) {
     e.preventDefault();
 
     const formData = {
-      email: e.target.email.value,
-      password: e.target.password.value,
+      email: input.email,
+      password: input.password,
     };
 
     try {
@@ -50,29 +58,40 @@ function LoginForm() {
       setLocalStorage("LoginData", data);
       setLocalStorage("headerData", header_data);
       toastSuccess("Login Success");
+      setInput({ email: "", password: "" });
     } catch (error) {
       setError(error);
       toastError("Login Unsuccessful");
+      setInput({ email: "", password: "" });
     }
-  };
+  }
 
   useEffect(() => {
-    console.log(data);
-    // console.log(data);
-    console.log(error);
-  }, [data, error]);
+    console.log("INPUT", input);
+  }, [input]);
 
   return (
     <Form
       onSubmit={handleLogin}
       className="flex flex-col w-1/3 justify-center items-center bg-Horchata p-6 rounded-lg"
     >
-      <InputField label="Email" type="text" name="email" />
-      <InputField label="Password" type="password" name="password" />
+      <InputField
+        label="Email"
+        type="text"
+        name="email"
+        value={input.email}
+        handleInputChange={handleInputChange}
+      />
+      <InputField
+        label="Password"
+        type="password"
+        name="password"
+        value={input.password}
+        handleInputChange={handleInputChange}
+      />
       <button
         type="submit"
         className="w-full bg-Aubergine text-White rounded-lg p-2 font-semibold mt-4"
-        formAction="submit"
       >
         Login
       </button>
