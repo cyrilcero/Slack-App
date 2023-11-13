@@ -14,7 +14,7 @@ function LoginPage() {
 function InputField({ label, type, name, id }) {
   return (
     <>
-      <label htmlFor={name} className="w-full text-black py-1 font-semibold">
+      <label htmlFor={name} className="w-full text-black pb-1 font-semibold">
         {label}
       </label>
       <input
@@ -30,7 +30,7 @@ function InputField({ label, type, name, id }) {
 function LoginForm() {
   return (
     <div className="flex flex-col w-full justify-center items-center">
-      <Form className="flex flex-col w-1/3 justify-center items-center bg-Horchata p-8 rounded-lg">
+      <Form className="flex flex-col w-1/3 justify-center items-center bg-Horchata p-6 rounded-lg">
         <InputField
           label="Username"
           type="text"

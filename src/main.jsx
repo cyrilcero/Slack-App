@@ -6,7 +6,7 @@ import App from "./App.jsx";
 import "./index.css";
 
 import LoginPage from "./pages/LoginPage/LoginPage";
-import SigninPage from "./pages/SigninPage/SigninPage";
+import SignUpPage from "./pages/SignUpPage/SignUpPage.jsx";
 
 const routes = createBrowserRouter([
   {
@@ -19,7 +19,7 @@ const routes = createBrowserRouter([
       },
       {
         path: "sign-in",
-        element: <SigninPage />,
+        element: <SignUpPage />,
       },
     ],
   },
