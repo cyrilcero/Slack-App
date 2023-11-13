@@ -2,6 +2,7 @@ import { Form } from "react-router-dom";
 import { InputField } from "./components/InputField";
 import { useState, useEffect } from "react";
 import SignUpPage from "../SignUpPage/SignUpPage";
+import { toastError, toastSuccess } from "../../utils/toasts";
 
 function LoginPage() {
   return (
@@ -40,8 +41,10 @@ function LoginForm() {
 
       const data = await response.json();
       setData(data);
+      toastSuccess("Login Success");
     } catch (error) {
       setError(error);
+      toastError("Login Unsuccessful");
     }
   };
 

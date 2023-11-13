@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Form } from "react-router-dom";
 import { InputField } from "../LoginPage/components/InputField";
+import { toastError, toastSuccess } from "../../utils/toasts";
 
 function SignUpPage() {
   return (
@@ -36,8 +37,10 @@ function SignUpForm() {
 
       const data = await response.json();
       setData(data);
+      toastSuccess("Account Created");
     } catch (error) {
       setError(error);
+      toastError("Error");
     }
   };
 
