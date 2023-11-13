@@ -11,29 +11,45 @@ function LoginPage() {
   );
 }
 
+function InputField({ label, type, name, id }) {
+  return (
+    <>
+      <label htmlFor={name} className="w-full text-black py-1 font-semibold">
+        {label}
+      </label>
+      <input
+        type={type}
+        name={name}
+        id={id}
+        className="w-full text-black bg-white border-spacing-4 border-2 border-none rounded-lg p-2 mb-2"
+      />
+    </>
+  );
+}
+
 function LoginForm() {
   return (
     <div className="flex flex-col w-full justify-center items-center">
       <Form className="flex flex-col w-1/3 justify-center items-center bg-Horchata p-8 rounded-lg">
-        <label htmlFor="" className="w-full text-black py-1 font-semibold">
-          Username
-        </label>
-        <input
+        <InputField
+          label="Username"
           type="text"
           name="username"
           id="username"
-          className="w-full text-black bg-white border-spacing-4 border-2 border-none rounded-lg p-2 mb-2"
         />
-        <label htmlFor="" className="w-full text-black py-1 font-semibold">
-          Password
-        </label>
-        <input
+        <InputField
+          label="Password"
           type="password"
           name="password"
           id="password"
-          className="w-full text-black bg-white border-spacing-4 border-2 border-none rounded-lg p-2 mb-2"
         />
-        <button type="submit" className="w-full bg-Aubergine text-White rounded-lg p-2 font-semibold mt-4" formAction="submit">Login</button>
+        <button
+          type="submit"
+          className="w-full bg-Aubergine text-White rounded-lg p-2 font-semibold mt-4"
+          formAction="submit"
+        >
+          Login
+        </button>
       </Form>
     </div>
   );
