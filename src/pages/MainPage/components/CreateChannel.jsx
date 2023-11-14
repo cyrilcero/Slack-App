@@ -1,40 +1,115 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Select from "react-select";
+import makeAnimated from "react-select/animated";
+
+import { getLocalStorage } from "../../../utils/localstorage";
+import { toastError, toastSuccess } from "../../../utils/toasts";
 
 function CreateChannel() {
   const [channelName, setChannelName] = useState("");
+  const [channelMembers, setChannelMembers] = useState([]);
+  const [options, setOptions] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const animatedComponents = makeAnimated();
 
-  const options = [
-    { value: "testing", label: "testing" },
-    { value: "testing1", label: "testing1" },
-    { value: "testing2", label: "testing2" },
-    { value: "testing3", label: "testing3" },
-    { value: "testing4", label: "testing4" },
-    { value: "testing5", label: "testing5" },
+  useEffect(() => {
+    async function loadData() {
+      setLoading(true);
+      const header_data = getLocalStorage("headerData");
+      try {
+        const response = await fetch("http://206.189.91.54/api/v1/users", {
+          method: "GET",
+          headers: {
+            "access-token": header_data["access-token"],
+            client: header_data["client"],
+            expiry: header_data["expiry"],
+            uid: header_data["uid"],
+          },
+        });
+        console.log("RES", response);
+        const data = await response.json();
+        const dropdown_options = data.data.map((users) => [
+          { value: [users.id, users.email], label: users.email },
+        ]);
+        setOptions(dropdown_options);
+        setLoading(false);
+        toastSuccess("options loaded");
+      } catch (error) {
+        console.log(error);
+        toastError("error");
+      }
+    }
+    // if (options === null) {
+    //   loadData();
+    // }
+
+    console.log(channelMembers);
+  }, [channelMembers, options]);
+
+  const option = [
+    { value: 1, label: "testing" },
+    { value: 2, label: "testing1" },
+    { value: 3, label: "testing2" },
+    { value: 4, label: "testing3" },
+    { value: 5, label: "testing4" },
+    { value: 6, label: "testing5" },
   ];
 
+  function handleInputChange(e) {
+    setChannelName(e.target.value);
+  }
+
+  function handleDropdownChange(e) {
+    setChannelMembers((prev) => [...prev, e.value]);
+  }
+
   return (
-    <>
-      <div className="flex flex-col w-full h-auto bg-slate-900 p-4 rounded-xl">
-        <h1 className="text-3xl text-center font-bold">Create New Channel</h1>
-        <label>Channel Name</label>
-        <input></input>
-        <label>Select Channel Members</label>
+    <div className="flex flex-col">
+      <h1 className="text-red-400">NOT YET FUNCTIONAL EXCEPT SA CLOSE 😂</h1>
+      <div className="flex flex-col w-full h-auto bg-slate-900 p-8 rounded-xl ">
+        <h1 className="text-3xl text-center font-bold py-4">
+          Create New Channel
+        </h1>
+        <label className="py-2">Channel Name</label>
+        <input
+          name="channelName"
+          type="text"
+          className="bg-white rounded-[4px] p-2 h-[38px] text-slate-950 mb-4"
+          value={channelName}
+          onChange={handleInputChange}
+        ></input>
+        <label className="py-2">
+          Select Channel Members - You can select multiple
+        </label>
+
         <Select
-          options={options}
-          isMulti={true}
+          className="mb-4 text-black"
+          options={option}
+          isMulti
+          isClearable
+          components={animatedComponents}
+          loadingMessage={"loading"}
+          name="user_ids"
+          onChange={handleDropdownChange}
           placeholder="Add Members"
-        ></Select>
-        <div className="flex justify-end gap-4 py-4">
+        />
+
+        <div className="flex justify-end gap-4 pt-4">
           <button className="bg-SlackGreen rounded-lg h-12 p-2 px-6">
             Create Channel
           </button>
-          <button className="bg-SlackRed rounded-lg h-12 p-2 px-6">
+          <button
+            className="bg-SlackRed rounded-lg h-12 p-2 px-6"
+            onClick={() => navigate("/app")}
+          >
             Close
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
