@@ -12,6 +12,7 @@ import SignUpPage from "./pages/SignUpPage/SignUpPage";
 import MainPage from "./pages/MainPage/MainPage";
 import Dashboard from "./pages/MainPage/components/Dashboard";
 import AllUsers from "./pages/MainPage/components/AllUsers";
+import CreateChannel from "./pages/MainPage/components/CreateChannel.jsx";
 
 const routes = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const routes = createBrowserRouter([
       {
         path: "all-users",
         element: <AllUsers />,
+      },
+      {
+        path: "create-channel",
+        element: <CreateChannel />,
       },
     ],
   },
