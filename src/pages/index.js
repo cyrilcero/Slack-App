@@ -1,2 +1,3 @@
-export * from "./LoginPage"
-export * from "./SigninPage"
+export * from "./LoginPage";
+export * from "./SignUnPage";
+export * from "./MainPage";

@@ -9,10 +9,11 @@ function App() {
       </header>
       <ul className="flex flex-col w-full justify-center items-center text-body text-SlackGreen mb-4">
         ***Still Under Development - Features Implemented:***
-        <li>Login - No redirect yet</li>
-        <li>Sign up - No redirect yet</li>
+        <li>-------------</li>
+        <li>Login, Sign up</li>
         <li>Error validation - Based on API error message</li>
         <li>Local Storage - Signin/Create Account Data and Signin Headers</li>
+        <li>Logout</li>
       </ul>
       <div className="flex flex-col w-full justify-center items-center">
         <Outlet />

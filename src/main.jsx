@@ -8,8 +8,10 @@ import App from "./App.jsx";
 import "./index.css";
 
 import LoginPage from "./pages/LoginPage/LoginPage";
-import SignUpPage from "./pages/SignUpPage/SignUpPage.jsx";
-import AppPage from "./pages/AppPage/AppPage.jsx";
+import SignUpPage from "./pages/SignUpPage/SignUpPage";
+import MainPage from "./pages/MainPage/MainPage";
+import Dashboard from "./pages/MainPage/components/Dashboard";
+import AllUsers from "./pages/MainPage/components/AllUsers";
 
 const routes = createBrowserRouter([
   {
@@ -28,7 +30,17 @@ const routes = createBrowserRouter([
   },
   {
     path: "/app",
-    element: <AppPage />,
+    element: <MainPage />,
+    children: [
+      {
+        index: true,
+        element: <Dashboard />,
+      },
+      {
+        path: "all-users",
+        element: <AllUsers />,
+      },
+    ],
   },
 ]);
 

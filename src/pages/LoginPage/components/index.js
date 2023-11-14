@@ -1,1 +1,1 @@
-.
+export * from "./InputField";
