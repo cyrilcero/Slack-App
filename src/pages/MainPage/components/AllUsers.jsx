@@ -42,27 +42,35 @@ function AllUsersTable() {
     console.log(data);
   }, [data]);
 
-  return (
-    <>
-      <div onClick={loadData}>TESTING</div>
-      <table className="overflow-y-auto">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Email Address</th>
-          </tr>
-        </thead>
-        {data && (
-          <tbody>
-            {data.data.map((user, idx) => (
-              <tr key={idx}>
+  if (data) {
+    const sortedData = data.data.sort((a, b) => a.id - b.id);
+    return (
+      <div className="w-1/2">
+        <table className="w-full">
+          <thead className="w-full bg-slate-500">
+            <tr className="text-center">
+              <th>ID</th>
+              <th>Email Address</th>
+            </tr>
+          </thead>
+          <tbody className="w-full text-center">
+            {sortedData.map((user) => (
+              <tr key={user.id} className="even:bg-slate-700 text-center">
                 <td>{user.id}</td>
                 <td>{user.email}</td>
               </tr>
             ))}
           </tbody>
-        )}
-      </table>
+        </table>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="text-center" onClick={loadData}>
+        CLICK ME TO GENERATE TABLE
+      </div>
     </>
   );
 }

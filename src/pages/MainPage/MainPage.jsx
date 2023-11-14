@@ -9,10 +9,11 @@ import { PiUserListBold } from "react-icons/pi";
 import { BiLogOutCircle } from "react-icons/bi";
 import { FaPlus } from "react-icons/fa";
 
-function NavBarItems({ logo, to }) {
+function NavBarItems({ logo, to, onClick }) {
   return (
     <NavLink
       to={to}
+      onClick={onClick}
       className="flex justify-center items-center w-full aspect-square rounded-full hover:rounded-3xl hover:bg-SlackGreen transition duration-200 ease-in bg-Aubergine text-white text-3xl"
     >
       {logo}
@@ -38,12 +39,7 @@ function NavBar() {
         <NavBarItems to={""} logo={"D"} />
         <NavBarItems to={""} logo={<FaPlus />} />
       </div>
-      <NavLink
-        onClick={handleLogout}
-        className="flex justify-center items-center w-full aspect-square rounded-full hover:rounded-3xl hover:bg-SlackGreen transition duration-200 ease-in bg-Aubergine text-white text-3xl"
-      >
-        <BiLogOutCircle />
-      </NavLink>
+      <NavBarItems to={""} logo={<BiLogOutCircle />} onClick={handleLogout} />
     </nav>
   );
 }
