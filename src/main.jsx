@@ -9,6 +9,7 @@ import "./index.css";
 
 import LoginPage from "./pages/LoginPage/LoginPage";
 import SignUpPage from "./pages/SignUpPage/SignUpPage.jsx";
+import AppPage from "./pages/AppPage/AppPage.jsx";
 
 const routes = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const routes = createBrowserRouter([
         element: <SignUpPage />,
       },
     ],
+  },
+  {
+    path: "/app",
+    element: <AppPage />,
   },
 ]);
 
