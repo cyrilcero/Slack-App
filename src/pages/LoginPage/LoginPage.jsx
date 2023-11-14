@@ -1,6 +1,6 @@
-import { Form } from "react-router-dom";
-import { InputField } from "./components/InputField";
 import { useState, useEffect } from "react";
+import { Form, Link } from "react-router-dom";
+import { InputField } from "./components/InputField";
 import SignUpPage from "../SignUpPage/SignUpPage";
 import { toastError, toastSuccess } from "../../utils/toasts";
 import { setLocalStorage } from "../../utils/localstorage";
@@ -8,12 +8,15 @@ import { setLocalStorage } from "../../utils/localstorage";
 function LoginPage() {
   return (
     <>
-      <h1 className="flex w-full justify-center items-center text-body text-SlackGreen">
-        *Still Under Development*
-      </h1>
+      <ul className="flex flex-col w-full justify-center items-center text-body text-SlackGreen">
+        ***Still Under Development - Features Implemented:***
+        <li>Login - No redirect yet</li>
+        <li>Sign up - No redirect yet</li>
+        <li>Error validation - Based on API error message</li>
+      </ul>
+
       <div className="flex flex-col gap-4 w-full justify-center items-center">
         <LoginForm />
-        <SignUpPage />
       </div>
     </>
   );
@@ -55,16 +58,14 @@ function LoginForm() {
       };
       const data = await response.json();
       setData(data);
-      setLocalStorage("LoginData", data);
-      setLocalStorage("headerData", header_data);
-      /**
-       * TODO: add error validator
-       */
 
+      // error handle the reponse
       if (data.success === false) {
         toastError(data.errors[0]);
       } else {
         toastSuccess("Successful Login");
+        setLocalStorage("LoginData", data);
+        setLocalStorage("headerData", header_data);
       }
 
       setInput({ email: "", password: "" });
@@ -84,6 +85,7 @@ function LoginForm() {
       onSubmit={handleLogin}
       className="flex flex-col w-1/3 justify-center items-center bg-Horchata p-6 rounded-lg"
     >
+      {/* <div className="h-10 w-full bg-red-700"></div> */}
       <InputField
         placeholder="email@gmail.com"
         label="Email"
@@ -106,6 +108,9 @@ function LoginForm() {
       >
         Login
       </button>
+      <span className="w-full py-2 text-center ">
+        Don't have an account? <Link to={"/sign-up"}>Signup</Link>
+      </span>
     </Form>
   );
 }

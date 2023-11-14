@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form } from "react-router-dom";
+import { Form, Link } from "react-router-dom";
 import { InputField } from "../LoginPage/components/InputField";
 import { toastError, toastSuccess } from "../../utils/toasts";
 import { setLocalStorage } from "../../utils/localstorage";
@@ -7,7 +7,15 @@ import { setLocalStorage } from "../../utils/localstorage";
 function SignUpPage() {
   return (
     <>
-      <SignUpForm />
+      <ul className="flex flex-col w-full justify-center items-center text-body text-SlackGreen">
+        ***Still Under Development - Features Implemented:***
+        <li>Login - No redirect yet</li>
+        <li>Sign up - No redirect yet</li>
+        <li>Error validation - Based on API error message</li>
+      </ul>
+      <div className="flex flex-col gap-4 w-full justify-center items-center">
+        <SignUpForm />
+      </div>
     </>
   );
 }
@@ -80,7 +88,7 @@ function SignUpForm() {
     >
       <InputField
         placeholder="email@gmail.com"
-        label="Email Address"
+        label="Email"
         type="text"
         name="email"
         value={input.email}
@@ -108,6 +116,9 @@ function SignUpForm() {
       >
         Sign Up
       </button>
+      <span className="w-full py-2 text-center ">
+        Already have an account? <Link to={"/"}>Login</Link>
+      </span>
     </Form>
   );
 }
