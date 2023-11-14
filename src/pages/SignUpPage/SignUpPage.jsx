@@ -5,19 +5,7 @@ import { toastError, toastSuccess } from "../../utils/toasts";
 import { setLocalStorage } from "../../utils/localstorage";
 
 function SignUpPage() {
-  return (
-    <>
-      <ul className="flex flex-col w-full justify-center items-center text-body text-SlackGreen">
-        ***Still Under Development - Features Implemented:***
-        <li>Login - No redirect yet</li>
-        <li>Sign up - No redirect yet</li>
-        <li>Error validation - Based on API error message</li>
-      </ul>
-      <div className="flex flex-col gap-4 w-full justify-center items-center">
-        <SignUpForm />
-      </div>
-    </>
-  );
+  return <SignUpForm />;
 }
 
 export default SignUpPage;
