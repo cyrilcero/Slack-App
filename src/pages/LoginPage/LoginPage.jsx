@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Form, Link } from "react-router-dom";
+import { Form, Link, NavLink } from "react-router-dom";
 import { InputField } from "./components/InputField";
 import SignUpPage from "../SignUpPage/SignUpPage";
 import { toastError, toastSuccess } from "../../utils/toasts";
@@ -15,7 +15,7 @@ function LoginPage() {
         <li>Error validation - Based on API error message</li>
       </ul>
 
-      <div className="flex flex-col gap-4 w-full justify-center items-center">
+      <div className="flex flex-col w-full justify-center items-center">
         <LoginForm />
       </div>
     </>
@@ -52,7 +52,7 @@ function LoginForm() {
       });
       const header_data = {
         uid: response.headers.get("uid"),
-        accessToken: response.headers.get("access-token"),
+        "access-token": response.headers.get("access-token"),
         expiry: response.headers.get("expiry"),
         client: response.headers.get("client"),
       };
@@ -63,7 +63,7 @@ function LoginForm() {
       if (data.success === false) {
         toastError(data.errors[0]);
       } else {
-        toastSuccess("Successful Login");
+        toastSuccess("Login Successful");
         setLocalStorage("LoginData", data);
         setLocalStorage("headerData", header_data);
       }
@@ -81,37 +81,55 @@ function LoginForm() {
   }, [input]);
 
   return (
-    <Form
-      onSubmit={handleLogin}
-      className="flex flex-col w-1/3 justify-center items-center bg-Horchata p-6 rounded-lg"
-    >
-      {/* <div className="h-10 w-full bg-red-700"></div> */}
-      <InputField
-        placeholder="email@gmail.com"
-        label="Email"
-        type="text"
-        name="email"
-        value={input.email}
-        handleInputChange={handleInputChange}
-      />
-      <InputField
-        placeholder="******"
-        label="Password"
-        type="password"
-        name="password"
-        value={input.password}
-        handleInputChange={handleInputChange}
-      />
-      <button
-        type="submit"
-        className="w-full bg-Aubergine text-White rounded-lg p-2 font-semibold mt-4"
-      >
-        Login
-      </button>
-      <span className="w-full py-2 text-center ">
-        Don't have an account? <Link to={"/sign-up"}>Signup</Link>
-      </span>
-    </Form>
+    <>
+      <div className="w-1/3">
+        <div className="flex items-center justify-around w-full h-14 rounded-tl-lg rounded-tr-lg overflow-hidden">
+          <NavLink
+            className="w-full h-full flex items-center justify-center bg-Horchata font-bold text-lg"
+            to={"/"}
+          >
+            Login
+          </NavLink>
+          <NavLink
+            className="w-full h-full flex items-center justify-center bg-Horchata/[30%] font-bold text-lg"
+            to={"/sign-up"}
+          >
+            Signup
+          </NavLink>
+        </div>
+        <Form
+          onSubmit={handleLogin}
+          className="flex flex-col w-full justify-center items-center bg-Horchata p-6 rounded-bl-lg rounded-br-lg"
+        >
+          {/* <div className="h-10 w-full bg-red-700"></div> */}
+          <InputField
+            placeholder="email@gmail.com"
+            label="Email"
+            type="text"
+            name="email"
+            value={input.email}
+            handleInputChange={handleInputChange}
+          />
+          <InputField
+            placeholder="******"
+            label="Password"
+            type="password"
+            name="password"
+            value={input.password}
+            handleInputChange={handleInputChange}
+          />
+          <button
+            type="submit"
+            className="w-full bg-Aubergine text-White rounded-lg p-2 font-semibold mt-4"
+          >
+            Login
+          </button>
+          <span className="w-full py-2 text-center ">
+            Don't have an account? <Link to={"/sign-up"}>Signup</Link>
+          </span>
+        </Form>
+      </div>
+    </>
   );
 }
 

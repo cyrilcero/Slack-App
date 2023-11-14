@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form, Link } from "react-router-dom";
+import { Form, Link, NavLink } from "react-router-dom";
 import { InputField } from "../LoginPage/components/InputField";
 import { toastError, toastSuccess } from "../../utils/toasts";
 import { setLocalStorage } from "../../utils/localstorage";
@@ -82,43 +82,61 @@ function SignUpForm() {
   }, [data, input]);
 
   return (
-    <Form
-      onSubmit={handleAccountCreation}
-      className="flex flex-col w-1/3 justify-center items-center bg-Horchata p-6 rounded-lg"
-    >
-      <InputField
-        placeholder="email@gmail.com"
-        label="Email"
-        type="text"
-        name="email"
-        value={input.email}
-        handleInputChange={handleInputChange}
-      />
-      <InputField
-        placeholder="******"
-        label="Password"
-        type="password"
-        name="password"
-        value={input.password}
-        handleInputChange={handleInputChange}
-      />
-      <InputField
-        placeholder="******"
-        label="Re-type Password"
-        type="password"
-        name="password_confirmation"
-        value={input.password_confirmation}
-        handleInputChange={handleInputChange}
-      />
-      <button
-        type="submit"
-        className="w-full bg-Aubergine text-White rounded-lg p-2 font-semibold mt-4"
-      >
-        Sign Up
-      </button>
-      <span className="w-full py-2 text-center ">
-        Already have an account? <Link to={"/"}>Login</Link>
-      </span>
-    </Form>
+    <>
+      <div className="w-1/3">
+        <div className="flex items-center justify-around w-full h-14 rounded-tl-lg rounded-tr-lg overflow-hidden">
+          <NavLink
+            className="w-full h-full flex items-center justify-center bg-Horchata/[30%] font-bold text-lg"
+            to={"/"}
+          >
+            Login
+          </NavLink>
+          <NavLink
+            className="w-full h-full flex items-center justify-center bg-Horchata font-bold text-lg"
+            to={"/sign-up"}
+          >
+            Signup
+          </NavLink>
+        </div>
+        <Form
+          onSubmit={handleAccountCreation}
+          className="flex flex-col w-full justify-center items-center bg-Horchata p-6 rounded-bl-lg rounded-br-lg"
+        >
+          <InputField
+            placeholder="email@gmail.com"
+            label="Email"
+            type="text"
+            name="email"
+            value={input.email}
+            handleInputChange={handleInputChange}
+          />
+          <InputField
+            placeholder="******"
+            label="Password"
+            type="password"
+            name="password"
+            value={input.password}
+            handleInputChange={handleInputChange}
+          />
+          <InputField
+            placeholder="******"
+            label="Re-type Password"
+            type="password"
+            name="password_confirmation"
+            value={input.password_confirmation}
+            handleInputChange={handleInputChange}
+          />
+          <button
+            type="submit"
+            className="w-full bg-Aubergine text-White rounded-lg p-2 font-semibold mt-4"
+          >
+            Sign Up
+          </button>
+          <span className="w-full py-2 text-center ">
+            Already have an account? <Link to={"/"}>Login</Link>
+          </span>
+        </Form>
+      </div>
+    </>
   );
 }
