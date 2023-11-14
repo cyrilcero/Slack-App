@@ -8,6 +8,7 @@ import { MdAccountCircle } from "react-icons/md";
 import { PiUserListBold } from "react-icons/pi";
 import { BiLogOutCircle } from "react-icons/bi";
 import { FaPlus } from "react-icons/fa";
+import { LuUserPlus } from "react-icons/lu";
 
 function NavBarItems({ logo, to, onClick }) {
   return (
@@ -35,7 +36,7 @@ function NavBar() {
       <div className="flex flex-col gap-2">
         <NavBarItems to={"/app"} logo={<MdAccountCircle />} />
         <NavBarItems to={"/app/all-users"} logo={<PiUserListBold />} />
-        <NavBarItems to={""} logo={"C"} />
+        <NavBarItems to={""} logo={<LuUserPlus />} />
         <NavBarItems to={""} logo={"D"} />
         <NavBarItems to={""} logo={<FaPlus />} />
       </div>
