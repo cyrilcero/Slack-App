@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form, Link, NavLink } from "react-router-dom";
+import { Form, Link, NavLink, useNavigate } from "react-router-dom";
 import { InputField } from "../LoginPage/components/InputField";
 import { toastError, toastSuccess } from "../../utils/toasts";
 import { setLocalStorage } from "../../utils/localstorage";
@@ -18,6 +18,7 @@ function SignUpForm() {
   });
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   function handleInputChange(e) {
     setInput((prev) => ({
@@ -57,6 +58,7 @@ function SignUpForm() {
       setLocalStorage("SignUpData", data);
       // toastSuccess("Account Created");
       setInput({ email: "", password: "", password_confirmation: "" });
+      navigate("/");
     } catch (error) {
       setError(error);
       toastError("Error");

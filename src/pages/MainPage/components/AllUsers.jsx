@@ -14,6 +14,10 @@ function AllUsersTable() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(null);
 
+  /**
+   * TODO: add loading states / effects
+   */
+
   async function loadData() {
     const header_data = getLocalStorage("headerData");
     console.log(header_data);
@@ -46,7 +50,7 @@ function AllUsersTable() {
     const sortedData = data.data.sort((a, b) => a.id - b.id);
     return (
       <div className="w-1/2">
-        <table className="w-full">
+        <table className="w-full border">
           <thead className="w-full bg-slate-500">
             <tr className="text-center">
               <th>ID</th>
