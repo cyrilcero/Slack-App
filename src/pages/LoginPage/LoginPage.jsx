@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Form, Link, NavLink } from "react-router-dom";
+import { Form, Link, NavLink, useNavigate } from "react-router-dom";
+import { toastError, toastSuccess } from "../../utils/toasts";
 import { InputField } from "./components/InputField";
 import SignUpPage from "../SignUpPage/SignUpPage";
-import { toastError, toastSuccess } from "../../utils/toasts";
 import { setLocalStorage } from "../../utils/localstorage";
 
 function LoginPage() {
@@ -13,6 +13,7 @@ function LoginForm() {
   const [input, setInput] = useState({ email: "", password: "" });
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
+  const nav = useNavigate();
 
   function handleInputChange(e) {
     setInput((prev) => ({
@@ -53,6 +54,7 @@ function LoginForm() {
         toastSuccess("Login Successful");
         setLocalStorage("LoginData", data);
         setLocalStorage("headerData", header_data);
+        nav("/app");
       }
 
       setInput({ email: "", password: "" });
