@@ -15,7 +15,7 @@ function NavBarItems({ name, logo, to, onClick, id }) {
       id={id}
       to={to}
       onClick={onClick}
-      className="flex justify-center items-center w-full aspect-square rounded-full hover:rounded-3xl hover:bg-SlackGreen transition duration-200 ease-in bg-Aubergine text-white text-3xl"
+      className="flex justify-center items-center w-full aspect-square rounded-full hover:rounded-3xl hover:bg-SlackGreen transition duration-200 ease-in bg-[#2b2d31] text-SlackGreen hover:text-white text-3xl"
     >
       {logo}
     </NavLink>
@@ -32,7 +32,7 @@ export function NavBar() {
   }
 
   return (
-    <nav className="flex flex-col justify-between gap-2 w-1/12 h-full bg-Horchata p-2">
+    <nav className="flex flex-col justify-between gap-2 w-1/12 h-full bg-[#1e1f22] p-2">
       <div className="flex flex-col gap-2">
         <NavBarItems
           id="1"

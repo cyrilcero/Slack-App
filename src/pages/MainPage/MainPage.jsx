@@ -8,7 +8,7 @@ import { NavBar } from "./components/NavBar";
 function MainPage() {
   return (
     <>
-      <div className="flex w-full h-screen bg-slate-800">
+      <div className="flex w-full h-screen bg-[#313338]">
         <NavBar />
         <div className="p-4 h-full w-full text-white overflow-y-auto">
           <Outlet />
