@@ -25,10 +25,10 @@ function Dashboard() {
           THINGS TO DO
           <div className="text-2xl text-left font-normal">
             <li className="text-green-400">LOGIN/SIGNUP THINGS</li>
-            <li className="line-through">
+            <li className="line-through text-red-400">
               User is able to create his/her account with email and password
             </li>
-            <li className="line-through">
+            <li className="line-through text-red-400">
               User is able to login his/her credentials
             </li>
             <li className="text-green-400">SIDEBAR THINGS</li>
@@ -37,8 +37,12 @@ function Dashboard() {
               https://www.flowbite-react.com/docs/components/tooltip
             </li>
             <li className="text-green-400">CHANNEL THINGS</li>
-            <li>User is able to create new channel</li>
-            <li>User is able to add users on a channel</li>
+            <li className="text-orange-400">
+              User is able to create new channel
+            </li>
+            <li className="text-orange-400">
+              User is able to add users on a channel
+            </li>
             <li>
               Process flow: Click "+" then redirect, 1 input:name 1
               select:members 1 btn create channel, toast success then reload
