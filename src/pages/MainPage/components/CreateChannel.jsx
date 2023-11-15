@@ -7,6 +7,10 @@ import makeAnimated from "react-select/animated";
 import { getLocalStorage } from "../../../utils/localstorage";
 import { toastError, toastSuccess } from "../../../utils/toasts";
 
+//overlay 070707
+// body 313338
+// footer/ button div bg 2b2d31
+
 function CreateChannel() {
   const [channelName, setChannelName] = useState("");
   const [channelMembers, setChannelMembers] = useState([]);
@@ -67,9 +71,8 @@ function CreateChannel() {
   }
 
   return (
-    <div className="flex flex-col">
-      <h1 className="text-red-400">NOT YET FUNCTIONAL EXCEPT SA CLOSE 😂</h1>
-      <div className="flex flex-col w-full h-auto bg-slate-900 p-8 rounded-xl ">
+    <div className="flex flex-col w-full h-screen m-4 justify-center items-center">
+      <div className="flex flex-col w-1/2 h-auto bg-[#070707] p-8 rounded-xl ">
         <h1 className="text-3xl text-center font-bold py-4">
           Create New Channel
         </h1>
@@ -98,14 +101,21 @@ function CreateChannel() {
         />
 
         <div className="flex justify-end gap-4 pt-4">
-          <button className="bg-SlackGreen rounded-lg h-12 p-2 px-6">
-            Create Channel
-          </button>
           <button
-            className="bg-SlackRed rounded-lg h-12 p-2 px-6"
+            className="bg-transparent rounded-lg h-12 p-2 px-6"
             onClick={() => navigate("/app")}
           >
             Close
+          </button>
+          <button
+            disabled={!channelName}
+            className={
+              !channelName
+                ? "bg-SlackGreen/[40%] rounded-lg h-12 p-2 px-6"
+                : "bg-SlackGreen rounded-lg h-12 p-2 px-6"
+            }
+          >
+            Create Channel
           </button>
         </div>
       </div>

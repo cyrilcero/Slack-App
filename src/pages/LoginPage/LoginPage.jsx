@@ -71,7 +71,7 @@ function LoginForm() {
 
   return (
     <>
-      <div className="w-1/3">
+      <div className="w-1/4 max-w-md min-w-[300px]">
         <div className="flex items-center justify-around w-full h-14 rounded-tl-lg rounded-tr-lg overflow-hidden shadow-md">
           <NavLink
             className="w-full h-full flex items-center justify-center bg-Horchata font-bold text-lg"

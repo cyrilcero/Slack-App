@@ -17,7 +17,6 @@ function SignUpForm() {
     password_confirmation: "",
   });
   const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   function handleInputChange(e) {
@@ -48,7 +47,7 @@ function SignUpForm() {
       const data = await response.json();
       setData(data);
       /**
-       * TODO: add error validator
+       * TODO: add loading states / effects
        */
       if (data.status === "error") {
         toastError(data.errors.full_messages[0]);
@@ -73,7 +72,7 @@ function SignUpForm() {
 
   return (
     <>
-      <div className="w-1/3">
+      <div className="w-1/4 max-w-md">
         <div className="flex items-center justify-around w-full h-14 rounded-tl-lg rounded-tr-lg overflow-hidden shadow-md">
           <NavLink
             className="w-full h-full flex items-center justify-center bg-Horchata/[30%] font-bold text-lg"
