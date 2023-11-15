@@ -10,7 +10,7 @@ function MainPage() {
     <>
       <div className="flex w-full h-screen bg-[#313338]">
         <NavBar />
-        <div className="p-4 h-full w-full text-white overflow-y-auto">
+        <div className="flex h-full w-full text-white overflow-y-auto">
           <Outlet />
         </div>
       </div>

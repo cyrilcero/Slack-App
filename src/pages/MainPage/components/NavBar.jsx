@@ -11,11 +11,15 @@ import { FaPlus } from "react-icons/fa";
 function NavBarItems({ name, logo, to, onClick, id }) {
   return (
     // <Tooltip content={name} place="right" anchorSelect={id}>
+
+    /**
+     * TODO: ADD TOOLTIP AND ACTIVE STATE FOR NAVLINK
+     */
     <NavLink
       id={id}
       to={to}
       onClick={onClick}
-      className="flex justify-center items-center w-full aspect-square rounded-full hover:rounded-3xl hover:bg-SlackGreen transition duration-200 ease-in bg-[#2b2d31] text-SlackGreen hover:text-white text-3xl"
+      className="flex justify-center items-center w-11/12 aspect-square rounded-full hover:rounded-3xl hover:bg-SlackGreen transition duration-200 ease-in bg-[#2b2d31] text-SlackGreen hover:text-white text-3xl"
     >
       {logo}
     </NavLink>
@@ -32,8 +36,8 @@ export function NavBar() {
   }
 
   return (
-    <nav className="flex flex-col justify-between gap-2 w-1/12 h-full bg-[#1e1f22] p-2">
-      <div className="flex flex-col gap-2">
+    <nav className="flex flex-col justify-between w-1/12 h-full bg-[#1e1f22] py-4 px-2">
+      <div className="flex flex-col items-center gap-2">
         <NavBarItems
           id="1"
           name="Home"
@@ -48,7 +52,9 @@ export function NavBar() {
         />
         <NavBarItems to={"/app/create-channel"} logo={<FaPlus />} />
       </div>
-      <NavBarItems to={""} logo={<BiLogOutCircle />} onClick={handleLogout} />
+      <div className="flex justify-center items-center">
+        <NavBarItems to={""} logo={<BiLogOutCircle />} onClick={handleLogout} />
+      </div>
     </nav>
   );
 }
