@@ -49,7 +49,7 @@ function AllUsersTable() {
   if (data) {
     const sortedData = data.data.sort((a, b) => a.id - b.id);
     return (
-      <div className="w-1/2">
+      <div className="w-full flex justify-center">
         <table className="w-full border">
           <thead className="w-full bg-slate-500">
             <tr className="text-center">
@@ -72,7 +72,7 @@ function AllUsersTable() {
 
   return (
     <>
-      <div className="text-center" onClick={loadData}>
+      <div className="w-full h-full p-4 text-center" onClick={loadData}>
         CLICK ME TO GENERATE TABLE
       </div>
     </>

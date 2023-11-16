@@ -36,7 +36,7 @@ export function NavBar() {
   }
 
   return (
-    <nav className="flex flex-col justify-between w-[5%] h-full bg-[#1e1f22] py-4 px-2">
+    <nav className="flex flex-col justify-between w-[5%] min-w-[80px] h-full bg-[#1e1f22] py-4 px-2">
       <div className="flex flex-col items-center gap-2">
         <NavBarItems
           id="1"

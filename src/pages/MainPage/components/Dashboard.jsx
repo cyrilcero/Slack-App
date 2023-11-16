@@ -3,7 +3,7 @@ import React from "react";
 function Dashboard() {
   return (
     <>
-      <div className="messaging-bar flex flex-col w-1/4 p-4 h-full bg-[#2b2d31]">
+      <div className="flex flex-col w-1/4 min-w-[250px] p-4 h-full bg-[#2b2d31]">
         SELECT USER NA I-CHACHAT
         <ul>
           {" "}
