@@ -6,7 +6,7 @@ import { toastSuccess, toastError } from "../../../utils/toasts";
 
 function Dashboard() {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState("");
+  const [channelData, setChannelData] = useState("");
 
   useEffect(() => {
     async function loadData() {
@@ -23,8 +23,9 @@ function Dashboard() {
           },
         });
         console.log("RES", response);
-        const data = await response.json();
-        console.log("DATA", data);
+        const channelData = await response.json();
+        setChannelData(channelData);
+        console.log("DATA", channelData);
         toastSuccess("Loaded Channels");
         setLoading(false);
       } catch (error) {
@@ -47,9 +48,9 @@ function Dashboard() {
           <FaPlus />
         </div>
         <div>
-          {data && (
+          {channelData && (
             <ul>
-              {data.data.map((item, idx) => (
+              {channelData.data.map((item, idx) => (
                 <li key={idx}>
                   <span>{item.name}</span>
                 </li>
