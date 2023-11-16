@@ -35,7 +35,6 @@ function AllUsersTable() {
       console.log("RES", response);
       const data = await response.json();
       setData(data);
-      setLocalStorage("allUsers", data);
       toastSuccess("Data Retrieved");
     } catch (error) {
       setError(error);

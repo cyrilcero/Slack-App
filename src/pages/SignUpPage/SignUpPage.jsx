@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Form, Link, NavLink, useNavigate } from "react-router-dom";
 import { InputField } from "../LoginPage/components/InputField";
-import { toastError, toastSuccess } from "../../utils/toasts";
-import { setLocalStorage } from "../../utils/localstorage";
+import { setLocalStorage, toastError, toastSuccess } from "../../utils";
 
 function SignUpPage() {
   return <SignUpForm />;
@@ -54,8 +53,6 @@ function SignUpForm() {
       } else {
         toastSuccess("Account Created Successfully");
       }
-      setLocalStorage("SignUpData", data);
-      // toastSuccess("Account Created");
       setInput({ email: "", password: "", password_confirmation: "" });
       navigate("/");
     } catch (error) {
