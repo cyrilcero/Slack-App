@@ -59,7 +59,6 @@ function SignUpForm() {
       setInput({ email: "", password: "", password_confirmation: "" });
       navigate("/");
     } catch (error) {
-      setError(error);
       toastError("Error");
       setInput({ email: "", password: "", password_confirmation: "" });
     }

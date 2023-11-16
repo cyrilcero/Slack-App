@@ -25,6 +25,7 @@ function AllUsersTable() {
       const response = await fetch("http://206.189.91.54/api/v1/users", {
         method: "GET",
         headers: {
+          "Content-Type": "application/json",
           "access-token": header_data["access-token"],
           client: header_data["client"],
           expiry: header_data["expiry"],

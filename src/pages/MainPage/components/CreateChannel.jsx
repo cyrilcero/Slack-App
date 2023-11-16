@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Form, useNavigate } from "react-router-dom";
 import BarLoader from "react-spinners/BarLoader";
 
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 
-import { getLocalStorage } from "../../../utils/localstorage";
-import { toastError, toastSuccess } from "../../../utils/toasts";
+import { getLocalStorage, toastError, toastSuccess } from "../../../utils";
 
 //overlay 070707
 // body 313338
@@ -17,6 +16,7 @@ function CreateChannel() {
   const [channelMembers, setChannelMembers] = useState([]);
   const [options, setOptions] = useState(null);
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const animatedComponents = makeAnimated();
 
@@ -36,11 +36,10 @@ function CreateChannel() {
         });
         console.log("RES", response);
         const data = await response.json();
-        const dropdown_options = data.data.map((users) => [
+        const dropdown_options = data.data.flatMap((users) => [
           { value: users.id, label: users.email },
         ]);
-        const dropdown_options_flat = dropdown_options.flat();
-        setOptions(dropdown_options_flat);
+        setOptions(dropdown_options);
         setLoading(false);
       } catch (error) {
         console.log(error);
@@ -52,8 +51,8 @@ function CreateChannel() {
     }
 
     // console.log(options);
-    console.log(channelName);
-    console.log(channelMembers);
+    console.log("Channel Name:", channelName);
+    console.log("Channel Members:", channelMembers);
   }, [channelMembers, channelName, options]);
 
   // const option = [
@@ -73,10 +72,55 @@ function CreateChannel() {
     setChannelMembers(selectedOptions);
   }
 
+  function flatten(targetArray) {
+    return targetArray.map((item) => item.value);
+  }
+
+  async function handleCreateChannelSubmit() {
+    const header_data = getLocalStorage("headerData");
+    const members = flatten(channelMembers);
+    try {
+      const response = await fetch("http://206.189.91.54/api/v1/channels", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "access-token": header_data["access-token"],
+          client: header_data["client"],
+          expiry: header_data["expiry"],
+          uid: header_data["uid"],
+        },
+        body: JSON.stringify({
+          name: channelName,
+          user_ids: members,
+        }),
+      });
+      // console.log(body);
+      console.log("RES", response);
+      const data = await response.json();
+      console.log("DATA", data);
+
+      setChannelName("");
+      setChannelMembers([]);
+
+      /**
+       * TODO: data.errors
+       * "Name can't be blank"
+       * "Name is too short (minimum is 3 characters)"
+       */
+      toastSuccess(`Channel ${channelName} created successfully`);
+    } catch (error) {
+      console.error(error);
+      toastError(`${error}`);
+    }
+  }
+
   if (!loading) {
     return (
       <div className="flex flex-col w-full h-screen m-4 justify-center items-center">
-        <div className="flex flex-col w-1/2 h-auto bg-[#070707] p-8 rounded-xl ">
+        <Form
+          onSubmit={handleCreateChannelSubmit}
+          className="flex flex-col w-1/2 h-auto bg-[#070707] p-8 rounded-xl "
+        >
           <h1 className="text-3xl text-center font-bold py-4">
             Create New Channel
           </h1>
@@ -84,7 +128,8 @@ function CreateChannel() {
           <input
             name="channelName"
             type="text"
-            className="bg-white rounded-[4px] p-2 h-[38px] text-slate-950 mb-4"
+            placeholder="new-channel"
+            className="bg-white rounded-[4px] p-3 h-[38px] text-slate-950 mb-4"
             value={channelName}
             onChange={handleInputChange}
           ></input>
@@ -97,6 +142,7 @@ function CreateChannel() {
             options={options}
             isMulti
             isClearable
+            value={channelMembers}
             components={animatedComponents}
             loadingMessage={"loading"}
             name="user_ids"
@@ -122,13 +168,13 @@ function CreateChannel() {
               Create Channel
             </button>
           </div>
-        </div>
+        </Form>
       </div>
     );
   }
   return (
     <div className="w-full h-full flex justify-center items-center">
-      <BarLoader />
+      <BarLoader color="#2EB67D" />
     </div>
   );
 }
