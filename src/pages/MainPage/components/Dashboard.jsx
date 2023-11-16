@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
 import { TbTriangleInvertedFilled } from "react-icons/tb";
-import { getLocalStorage } from "../../../utils/localstorage";
-import { toastSuccess, toastError } from "../../../utils/toasts";
 
-function Dashboard() {
+import { toastSuccess, toastError, getLocalStorage } from "../../../utils";
+import { GoPlus } from "react-icons/go";
+
+function SideBar() {
   const [loading, setLoading] = useState(false);
   const [channelData, setChannelData] = useState("");
 
@@ -44,14 +44,13 @@ function Dashboard() {
             {/* <TbTriangleInvertedFilled /> */}
             <span>Channels</span>
           </div>
-
-          <FaPlus />
+          <GoPlus />
         </div>
         <div>
-          {channelData && (
+          {!loading && (
             <ul>
-              {channelData.data.map((item, idx) => (
-                <li key={idx}>
+              {(channelData.data || []).map((item, idx) => (
+                <li className="pl-2 py-1 hover:bg-slate-400 w-full" key={idx}>
                   <span>{item.name}</span>
                 </li>
               ))}
@@ -64,9 +63,17 @@ function Dashboard() {
             {/* <TbTriangleInvertedFilled /> */}
             <span>Direct Messages</span>
           </div>
-          <FaPlus />
+          <GoPlus />
         </div>
       </div>
+    </>
+  );
+}
+
+function Dashboard() {
+  return (
+    <>
+      <SideBar />
       <div className="main w-full">
         <ul className="w-full text-center font-extrabold text-3xl p-4">
           THINGS TO DO

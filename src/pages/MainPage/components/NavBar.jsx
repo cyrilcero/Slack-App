@@ -1,12 +1,8 @@
 import { useNavigate, NavLink } from "react-router-dom";
 
-import { setLocalStorage } from "../../../utils/localstorage";
-import { toastInfo } from "../../../utils/toasts";
+import { toastInfo, setLocalStorage } from "../../../utils";
 
-import { MdAccountCircle } from "react-icons/md";
-import { PiUserListBold } from "react-icons/pi";
-import { BiLogOutCircle } from "react-icons/bi";
-import { FaPlus } from "react-icons/fa";
+import { GoPeople, GoListOrdered, GoSignOut, GoPlus } from "react-icons/go";
 
 function NavBarItems({ name, logo, to, onClick, id }) {
   return (
@@ -38,22 +34,23 @@ export function NavBar() {
   return (
     <nav className="flex flex-col justify-between w-[5%] min-w-[80px] h-full bg-[#1e1f22] py-4 px-2">
       <div className="flex flex-col items-center gap-2">
-        <NavBarItems
-          id="1"
-          name="Home"
-          to={"/app"}
-          logo={<MdAccountCircle />}
-        />
+        <NavBarItems id="1" name="Home" to={"/app"} logo={<GoPeople />} />
         <NavBarItems
           id="2"
           name="All Users"
           to={"/app/all-users"}
-          logo={<PiUserListBold />}
+          logo={<GoListOrdered />}
         />
-        <NavBarItems to={"/app/create-channel"} logo={<FaPlus />} />
+        {/* 
+        
+        TODO: Insert Channel Icons Here
+        
+        */}
+
+        <NavBarItems to={"/app/create-channel"} logo={<GoPlus />} />
       </div>
       <div className="flex justify-center items-center">
-        <NavBarItems to={""} logo={<BiLogOutCircle />} onClick={handleLogout} />
+        <NavBarItems to={""} logo={<GoSignOut />} onClick={handleLogout} />
       </div>
     </nav>
   );
