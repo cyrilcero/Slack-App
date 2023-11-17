@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form } from "react-router-dom";
-import { GoPaperAirplane, GoPerson } from "react-icons/go";
+import {
+  GoPaperAirplane,
+  GoPerson,
+  GoHeart,
+  GoHeartFill,
+} from "react-icons/go";
 
 function MessageInput() {
   return (
@@ -21,9 +26,10 @@ function MessageInput() {
 }
 
 function Message({ user, message, time }) {
+  const [heartVisibility, setHeartVisibility] = useState(true);
   return (
     <div className="flex items-center w-full h-16">
-      <GoPerson className="w-[50px] h-[50px] aspect-square rounded-full bg-slate-700" />
+      <GoPerson className="min-w-[50px] min-h-[50px] aspect-square rounded-full bg-slate-700" />
       <div className="flex flex-col justify-center p-4">
         <div className="flex">
           <span className="font-bold pr-2">{user}</span>
@@ -31,11 +37,14 @@ function Message({ user, message, time }) {
         </div>
         <span>{message}</span>
       </div>
+      <div onClick={() => setHeartVisibility(!heartVisibility)}>
+        {heartVisibility ? <GoHeart /> : <GoHeartFill />}
+      </div>
     </div>
   );
 }
 
-function MessageArea({ target }) {
+function MessageArea() {
   return (
     <>
       <div className="p-4 w-full h-full">
@@ -44,6 +53,7 @@ function MessageArea({ target }) {
         </div>
         <div className="flex flex-col-reverse w-full h-[80%] p-4 bg-[#313338] gap-2">
           <Message user={"CyrilCero"} message="lorem" time={"12:00:01PM"} />
+          <Message user={"CyrilCero"} message="test" time={"12:00:01PM"} />
           <Message
             user={"User 1234"}
             message="Meron akong Chikaaaa"
