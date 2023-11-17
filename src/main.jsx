@@ -10,7 +10,7 @@ import "./index.css";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import SignUpPage from "./pages/SignUpPage/SignUpPage";
 import MainPage from "./pages/MainPage/MainPage";
-import Dashboard from "./pages/MainPage/components/Dashboard";
+import Sidebar from "./pages/MainPage/components/Sidebar.jsx";
 import AllUsers from "./pages/MainPage/components/AllUsers";
 import CreateChannel from "./pages/MainPage/components/CreateChannel.jsx";
 
@@ -35,7 +35,7 @@ const routes = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Dashboard />,
+        element: <Sidebar />,
       },
       {
         path: "all-users",

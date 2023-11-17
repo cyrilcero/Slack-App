@@ -144,7 +144,7 @@ function SideBar() {
   );
 }
 
-function Dashboard() {
+function Sidebar() {
   return (
     <>
       <SideBar />
@@ -153,4 +153,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Sidebar;

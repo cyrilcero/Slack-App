@@ -1,10 +1,6 @@
-import React from "react";
 import { Outlet } from "react-router-dom";
-import { Tooltip, TooltipWrapper } from "react-tooltip";
 
-import { LuUserPlus } from "react-icons/lu";
 import { NavBar } from "./components/NavBar";
-import SideBar from "./components/Dashboard";
 
 function MainPage() {
   return (

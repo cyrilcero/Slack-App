@@ -1,19 +1,30 @@
 import { useState, useEffect } from "react";
 import { Form, Link, NavLink, useNavigate } from "react-router-dom";
-import { toastError, toastSuccess } from "../../utils/toasts";
+import {
+  useFetch,
+  toastError,
+  toastSuccess,
+  setLocalStorage,
+} from "../../utils";
 import { InputField } from "./components/InputField";
-import SignUpPage from "../SignUpPage/SignUpPage";
-import { setLocalStorage } from "../../utils/localstorage";
-
-function LoginPage() {
-  return <LoginForm />;
-}
 
 function LoginForm() {
   const [input, setInput] = useState({ email: "", password: "" });
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const nav = useNavigate();
+  const formData = {
+    email: input.email,
+    password: input.password,
+  };
+
+  // const { data, response, error, loading, fetch } = useFetch();
+
+  // const url = "/auth/sign_in";
+  // const config = {
+  //   method: "POST",
+  //   body: { email: input.email, password: input.password },
+  // };
 
   function handleInputChange(e) {
     setInput((prev) => ({
@@ -25,10 +36,7 @@ function LoginForm() {
   async function handleLogin(e) {
     e.preventDefault();
 
-    const formData = {
-      email: input.email,
-      password: input.password,
-    };
+    // fetch(url, config);
 
     try {
       const response = await fetch("http://206.189.91.54/api/v1/auth/sign_in", {
@@ -67,7 +75,9 @@ function LoginForm() {
 
   useEffect(() => {
     console.log("INPUT", input);
-  }, [input]);
+    console.log("DATA", data);
+    // console.log("RES", response);
+  }, [input, data]);
 
   return (
     <>
@@ -120,6 +130,10 @@ function LoginForm() {
       </div>
     </>
   );
+}
+
+function LoginPage() {
+  return <LoginForm />;
 }
 
 export default LoginPage;
