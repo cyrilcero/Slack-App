@@ -7,6 +7,7 @@ import {
 } from "../../../utils";
 import { GoPlus, GoTriangleDown, GoTriangleRight } from "react-icons/go";
 import { Outlet, NavLink } from "react-router-dom";
+import MessageArea from "./MessageArea";
 
 function SideBar() {
   const [loading, setLoading] = useState(false);
@@ -147,7 +148,7 @@ function Dashboard() {
   return (
     <>
       <SideBar />
-      <Outlet />
+      <MessageArea />
     </>
   );
 }
