@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Form, useNavigate } from "react-router-dom";
 import BarLoader from "react-spinners/BarLoader";
 
-import Select from "react-select";
+import AsyncSelect from "react-select/async";
 import makeAnimated from "react-select/animated";
 
 import { getLocalStorage, toastError, toastSuccess } from "../../../utils";
@@ -58,6 +58,18 @@ function CreateChannel() {
 
   function handleDropdownChange(selectedOptions) {
     setChannelMembers(selectedOptions);
+  }
+
+  function loadOptions(searchValue) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const filteredOptions = options.filter((option) =>
+          option.label.toLowerCase().includes(searchValue.toLowerCase())
+        );
+        console.log("loadOptions:", searchValue, filteredOptions);
+        resolve(filteredOptions);
+      }, 500);
+    });
   }
 
   async function handleCreateChannelSubmit() {
@@ -124,9 +136,9 @@ function CreateChannel() {
             Select Channel Members - You can select multiple
           </label>
 
-          <Select
+          <AsyncSelect
             className="mb-4 text-black"
-            options={options}
+            loadOptions={loadOptions}
             isMulti
             isClearable
             value={channelMembers}

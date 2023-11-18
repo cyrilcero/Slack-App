@@ -6,7 +6,7 @@ import {
   toastInfo,
 } from "../../../utils";
 import { GoPlus, GoTriangleDown, GoTriangleRight } from "react-icons/go";
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import MessageArea from "./MessageArea";
 
 function SideBar() {
@@ -15,6 +15,7 @@ function SideBar() {
   const [messageData, setMessageData] = useState("");
   const [channelVisibility, setChannelVisibility] = useState(true);
   const [messageVisibility, setMessageVisibility] = useState(true);
+  const nav = useNavigate();
 
   async function loadChannelData() {
     setLoading(true);
@@ -88,7 +89,7 @@ function SideBar() {
             </div>
             <span>Channels</span>
           </div>
-          <div>
+          <div onClick={() => nav("create-channel")}>
             <GoPlus />
           </div>
         </div>
