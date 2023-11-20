@@ -84,13 +84,6 @@ function SideBarArea({
 
         {!getChannelLoading && getChannelData && (
           <div className="flex flex-col">
-            <NavLink
-              className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
-              key={4248}
-            >
-              <span>CYRIL</span>
-            </NavLink>
-
             {getChannelData.data.map((item) => (
               <NavLink
                 className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
