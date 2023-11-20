@@ -23,12 +23,12 @@ function NavBarItems({ name, logo, to, onClick, id }) {
   );
 }
 export function NavBar() {
-  const nav = useNavigate();
+  const navigate = useNavigate();
 
   function handleLogout() {
     deleteLocalStorage("headerData");
     toastInfo("Thank you for using SlaCord");
-    nav("/");
+    navigate("/");
   }
 
   return (

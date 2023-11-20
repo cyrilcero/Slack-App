@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Form, Link, NavLink, useNavigate } from "react-router-dom";
 import {
   useFetch,
@@ -9,22 +9,9 @@ import {
 import { InputField } from "./components/InputField";
 
 function LoginForm() {
+  const { data, response, error, loading, fetchAPI } = useFetch();
   const [input, setInput] = useState({ email: "", password: "" });
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
-  const nav = useNavigate();
-  const formData = {
-    email: input.email,
-    password: input.password,
-  };
-
-  // const { data, response, error, loading, fetch } = useFetch();
-
-  // const url = "/auth/sign_in";
-  // const config = {
-  //   method: "POST",
-  //   body: { email: input.email, password: input.password },
-  // };
+  const navigate = useNavigate();
 
   function handleInputChange(e) {
     setInput((prev) => ({
@@ -35,49 +22,36 @@ function LoginForm() {
 
   async function handleLogin(e) {
     e.preventDefault();
+    const url = "/auth/sign_in";
+    const config = {
+      method: "POST",
+      body: {
+        email: input.email,
+        password: input.password,
+      },
+    };
+    fetchAPI(url, config);
+  }
 
-    // fetch(url, config);
-
-    try {
-      const response = await fetch("http://206.189.91.54/api/v1/auth/sign_in", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+  useEffect(() => {
+    if (!loading && data) {
       const header_data = {
         uid: response.headers.get("uid"),
         "access-token": response.headers.get("access-token"),
         expiry: response.headers.get("expiry"),
         client: response.headers.get("client"),
       };
-      const data = await response.json();
-      setData(data);
-
-      // error handle the reponse
       if (data.success === false) {
         toastError(data.errors[0]);
       } else {
         toastSuccess("Login Successful");
         setLocalStorage("LoginData", data);
         setLocalStorage("headerData", header_data);
-        nav("/app");
+        navigate("/app");
       }
-
-      setInput({ email: "", password: "" });
-    } catch (error) {
-      setError(error);
-      toastError("Login Unsuccessful");
       setInput({ email: "", password: "" });
     }
-  }
-
-  useEffect(() => {
-    console.log("INPUT", input);
-    console.log("DATA", data);
-    // console.log("RES", response);
-  }, [input, data]);
+  }, [loading, data, response, navigate]);
 
   return (
     <>

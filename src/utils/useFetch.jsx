@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getLocalStorage } from "utils";
 
 export function useFetch() {
@@ -7,7 +7,7 @@ export function useFetch() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  async function fetch(url, config) {
+  async function fetchAPI(url, config) {
     setLoading(true);
     const header_data = getLocalStorage("headerData");
     const token = header_data?.["access-token"];
@@ -43,9 +43,6 @@ export function useFetch() {
       setLoading(false);
     }
   }
-  useEffect(() => {
-    fetch(url, config);
-  }, [url, config]);
 
-  return { data, response, error, loading, fetch };
+  return { data, response, error, loading, fetchAPI };
 }

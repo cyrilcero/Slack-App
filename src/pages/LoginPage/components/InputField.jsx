@@ -17,6 +17,8 @@ export function InputField({
         type={type}
         name={name}
         value={value}
+        id={name}
+        autoComplete="true"
         className="w-full text-black bg-white border-spacing-4 border-2 border-none rounded-lg p-2 mb-2"
       />
     </>

@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { Form, Link, NavLink, useNavigate } from "react-router-dom";
 import { InputField } from "../LoginPage/components/InputField";
-import { setLocalStorage, toastError, toastSuccess } from "../../utils";
+import {
+  useFetch,
+  setLocalStorage,
+  toastError,
+  toastSuccess,
+} from "../../utils";
 
 function SignUpPage() {
   return <SignUpForm />;
@@ -15,7 +20,7 @@ function SignUpForm() {
     password: "",
     password_confirmation: "",
   });
-  const [data, setData] = useState(null);
+  const { data, response, error, loading, fetchAPI } = useFetch();
   const navigate = useNavigate();
 
   function handleInputChange(e) {
@@ -27,48 +32,40 @@ function SignUpForm() {
 
   async function handleAccountCreation(e) {
     e.preventDefault();
-
-    const formData = {
-      email: input.email,
-      password: input.password,
-      password_confirmation: input.password_confirmation,
+    const url = "/auth";
+    const config = {
+      method: "POST",
+      body: {
+        email: input.email,
+        password: input.password,
+        password_confirmation: input.password_confirmation,
+      },
     };
+    fetchAPI(url, config);
+  }
 
-    try {
-      const response = await fetch("http://206.189.91.54/api/v1/auth", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-      setData(data);
-      /**
-       * TODO: add loading states / effects
-       */
+  useEffect(() => {
+    if (!loading && data) {
+      const header_data = {
+        uid: response.headers.get("uid"),
+        "access-token": response.headers.get("access-token"),
+        expiry: response.headers.get("expiry"),
+        client: response.headers.get("client"),
+      };
       if (data.status === "error") {
         toastError(data.errors.full_messages[0]);
       } else {
         toastSuccess("Account Created Successfully");
+        setLocalStorage("headerData", header_data);
+        navigate("/");
       }
       setInput({ email: "", password: "", password_confirmation: "" });
-      navigate("/");
-    } catch (error) {
-      toastError("Error");
-      setInput({ email: "", password: "", password_confirmation: "" });
     }
-  }
-
-  useEffect(() => {
-    console.log(data);
-    console.log("Input", input);
-  }, [data, input]);
+  }, [loading, data, response, navigate]);
 
   return (
     <>
-      <div className="w-1/4 max-w-md">
+      <div className="w-1/4 max-w-md min-w-[300px]">
         <div className="flex items-center justify-around w-full h-14 rounded-tl-lg rounded-tr-lg overflow-hidden shadow-md">
           <NavLink
             className="w-full h-full flex items-center justify-center bg-Horchata/[30%] font-bold text-lg"
