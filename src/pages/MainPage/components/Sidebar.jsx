@@ -29,8 +29,6 @@ function SideBarArea({
   messageVisibility,
   setMessageVisibility,
 }) {
-  // const [channelData, setChannelData] = useState("");
-  const [messageData, setMessageData] = useState("");
   const animatedComponents = makeAnimated();
   const nav = useNavigate();
 
@@ -46,20 +44,20 @@ function SideBarArea({
         { value: users.id, label: users.email },
       ]);
       setOptions(dropdown_options);
-      console.log(options);
+      // console.log(options);
     }
   }, [getUsersData, getUsersLoading, options, setOptions]);
 
   useEffect(() => {
     if (!getChannelData) {
-      console.log("CHANNEL");
+      // console.log("CHANNEL");
       getChannelFetchAPI();
+    } else {
+      if (getChannelData.errors) {
+        getChannelFetchAPI();
+      }
     }
   }, [getChannelData, getChannelFetchAPI]);
-
-  useEffect(() => {
-    console.log("CHAT TARGET", chatTarget);
-  }, [chatTarget]);
 
   return (
     <>
@@ -87,7 +85,6 @@ function SideBarArea({
         {!getChannelLoading && getChannelData && (
           <div className="flex flex-col">
             <NavLink
-              onClick={() => loadUserMessageData(4248)}
               className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
               key={4248}
             >
@@ -96,7 +93,6 @@ function SideBarArea({
 
             {getChannelData.data.map((item) => (
               <NavLink
-                onClick={() => loadUserMessageData(item.id)}
                 className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
                 key={item.id}
               >
@@ -120,7 +116,8 @@ function SideBarArea({
         <AsyncSelect
           className="mb-4 text-black"
           loadOptions={loadOptions}
-          isClearable
+          // isClearable
+          cacheOptions
           // defaultOptions
           value={chatTarget}
           components={animatedComponents}
@@ -135,6 +132,11 @@ function SideBarArea({
 }
 
 function Sidebar() {
+  const [options, setOptions] = useState(null);
+  const [chatTarget, setChatTarget] = useState([]);
+  const [channelVisibility, setChannelVisibility] = useState(true);
+  const [messageVisibility, setMessageVisibility] = useState(true);
+
   const {
     data: getChannelData,
     loading: getChannelLoading,
@@ -150,10 +152,17 @@ function Sidebar() {
   } = useFetch("/users", {
     method: "GET",
   });
-  const [options, setOptions] = useState(null);
-  const [chatTarget, setChatTarget] = useState([]);
-  const [channelVisibility, setChannelVisibility] = useState(true);
-  const [messageVisibility, setMessageVisibility] = useState(true);
+
+  const {
+    data: getMessageData,
+    loading: getMessageLoading,
+    fetchAPI: getMessageFetchAPI,
+  } = useFetch(
+    `/messages?receiver_id=${chatTarget.value}&receiver_class=User`,
+    {
+      method: "GET",
+    }
+  );
 
   function loadOptions(searchValue) {
     return new Promise((resolve) => {
@@ -161,11 +170,22 @@ function Sidebar() {
         const filteredOptions = options.filter((option) =>
           option.label.toLowerCase().includes(searchValue.toLowerCase())
         );
-        // console.log("loadOptions:", searchValue, filteredOptions);
         resolve(filteredOptions);
       }, 500);
     });
   }
+
+  useEffect(() => {
+    console.log("MD", getMessageData);
+    console.log("TARGET", chatTarget);
+  }, [getMessageData, chatTarget]);
+
+  useEffect(() => {
+    if (chatTarget) {
+      console.log("AFTER APICALL", getMessageData);
+      getMessageFetchAPI();
+    }
+  }, [chatTarget]);
 
   function handleDropdownChange(selectedOptions) {
     setChatTarget(selectedOptions);
@@ -190,8 +210,16 @@ function Sidebar() {
         setChannelVisibility={setChannelVisibility}
         messageVisibility={messageVisibility}
         setMessageVisibility={setMessageVisibility}
+        getMessageData={getMessageData}
+        getMessageLoading={getMessageLoading}
+        getMessageFetchAPI={getMessageFetchAPI}
       />
-      <MessageArea chatTarget={chatTarget} />
+      <MessageArea
+        chatTarget={chatTarget}
+        getMessageData={getMessageData}
+        getMessageLoading={getMessageLoading}
+        getMessageFetchAPI={getMessageFetchAPI}
+      />
     </>
   );
 }

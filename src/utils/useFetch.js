@@ -41,5 +41,5 @@ export function useFetch(url, config) {
     }
   }
 
-  return { data, response, error, loading, fetchAPI };
+  return { data, setData, response, error, loading, fetchAPI };
 }
