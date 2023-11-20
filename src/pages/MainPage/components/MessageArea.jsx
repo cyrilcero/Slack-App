@@ -31,15 +31,23 @@ function MessageInput({ chatTarget }) {
   });
   function handleSubmit(e) {
     e.preventDefault();
-    console.log("send chat");
-    sendChatFetchAPI();
-    setChatData("");
-    toastSuccess("Message sent!");
+    if (chatTarget == false) {
+      toastError("Receipient Missing!");
+    } else if (!chatData) {
+      toastError("Message Missing!");
+    } else {
+      sendChatFetchAPI();
+      setChatData("");
+      toastSuccess("Message sent!");
+    }
+    // window.location.reload();
   }
 
   useEffect(() => {
-    console.log("CHAT", chatData);
-  }, [chatData]);
+    console.log("CHAT TEXT", chatData);
+    console.log("CHAT DATA", sendChatData);
+    console.log("CHAT TARGET", chatTarget);
+  }, [chatData, sendChatData, chatTarget]);
 
   useEffect(() => {
     if (sendChatData) {
@@ -63,7 +71,12 @@ function MessageInput({ chatTarget }) {
       />
       <button
         type="submit"
-        className="flex justify-center items-center w-[20%] h-full bg-SlackGreen rounded-lg text-h1"
+        disabled={!chatData}
+        className={
+          !chatData
+            ? "flex justify-center items-center w-[20%] h-full bg-SlackGreen/[40%] rounded-lg text-h1"
+            : "flex justify-center items-center w-[20%] h-full bg-SlackGreen rounded-lg text-h1"
+        }
       >
         <GoPaperAirplane />
       </button>
