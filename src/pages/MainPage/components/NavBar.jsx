@@ -26,7 +26,7 @@ export function NavBar() {
   const nav = useNavigate();
 
   function handleLogout() {
-    setLocalStorage("headerData", "[]");
+    localStorage.removeItem("headerData");
     toastInfo("Thank you for using SlaCord");
     nav("/");
   }

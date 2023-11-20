@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -13,6 +12,7 @@ import MainPage from "./pages/MainPage/MainPage";
 import Sidebar from "./pages/MainPage/components/Sidebar.jsx";
 import AllUsers from "./pages/MainPage/components/AllUsers";
 import CreateChannel from "./pages/MainPage/components/CreateChannel.jsx";
+import { ProtectedRoute } from "./utils";
 
 const routes = createBrowserRouter([
   {
@@ -31,7 +31,11 @@ const routes = createBrowserRouter([
   },
   {
     path: "/app",
-    element: <MainPage />,
+    element: (
+      <ProtectedRoute>
+        <MainPage />
+      </ProtectedRoute>
+    ),
     children: [
       {
         index: true,
