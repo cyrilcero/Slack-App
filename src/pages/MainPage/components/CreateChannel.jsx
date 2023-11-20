@@ -14,32 +14,65 @@ import {
 function CreateChannel() {
   const [channelName, setChannelName] = useState("");
   const [channelMembers, setChannelMembers] = useState([]);
-  const { data, response, error, loading, fetchAPI } = useFetch();
+  const {
+    data: getUsersData,
+    response: getUsersResponse,
+    error: getUsersError,
+    loading: getUsersLoading,
+    fetchAPI: getUsersFetchAPI,
+  } = useFetch("/users", {
+    method: "GET",
+  });
+  const {
+    data: submitChannelData,
+    response: submitChannelResponse,
+    error: submitChannelError,
+    loading: submitChannelLoading,
+    fetchAPI: submitChannelFetchAPI,
+  } = useFetch("/channels", {
+    method: "POST",
+    body: {
+      name: channelName,
+      user_ids: channelMembers.map((item) => item.value),
+    },
+  });
   const [options, setOptions] = useState(null);
   const animatedComponents = makeAnimated();
   const navigate = useNavigate();
 
-  async function loadData() {
-    const url = "/users";
-    const config = {
-      method: "GET",
-    };
-    fetchAPI(url, config);
-  }
-
   useEffect(() => {
-    loadData();
-    // console.log("API CALL DONE");
+    if (!getUsersData) {
+      getUsersFetchAPI();
+    }
   }, []);
 
   useEffect(() => {
-    if (data) {
-      const dropdown_options = data.data.flatMap((users) => [
+    if (!getUsersLoading && getUsersData && !options) {
+      const dropdown_options = getUsersData.data.flatMap((users) => [
         { value: users.id, label: users.email },
       ]);
       setOptions(dropdown_options);
+      console.log(options);
     }
-  }, []);
+  }, [getUsersData, getUsersLoading, options]);
+
+  useEffect(() => {
+    if (!submitChannelLoading && submitChannelData && submitChannelResponse) {
+      if (submitChannelData.errors) {
+        toastError(submitChannelData.errors[0]);
+      } else {
+        toastSuccess(`Channel ${submitChannelData.data.name} created!`);
+        setChannelName("");
+        setChannelMembers([]);
+        navigate("/app");
+      }
+    }
+  }, [
+    submitChannelLoading,
+    submitChannelData,
+    submitChannelResponse,
+    navigate,
+  ]);
 
   function handleInputChange(e) {
     setChannelName(e.target.value);
@@ -47,6 +80,11 @@ function CreateChannel() {
 
   function handleDropdownChange(selectedOptions) {
     setChannelMembers(selectedOptions);
+  }
+
+  async function handleChannelCreationSubmit(e) {
+    e.preventDefault();
+    submitChannelFetchAPI();
   }
 
   function loadOptions(searchValue) {
@@ -61,38 +99,22 @@ function CreateChannel() {
     });
   }
 
-  async function handleCreateChannelSubmit() {
-    const url = "/channels";
-    const config = {
-      method: "POST",
-      body: {
-        name: channelName,
-        user_ids: channelMembers.map((item) => item.value),
-      },
-    };
-    fetchAPI(url, config);
-
-    //   if (data.errors) {
-    //     throw data.errors[0];
-    //   } else {
-    //     toastSuccess(`Channel ${channelName} created successfully`);
-    //     navigate("/app");
-    //   }
-  }
-
-  if (!loading) {
+  if (!getUsersLoading) {
     return (
       <div className="flex flex-col w-full h-full m-4 justify-center items-center">
         <Form
-          onSubmit={handleCreateChannelSubmit}
+          onSubmit={handleChannelCreationSubmit}
           className="flex flex-col w-1/2 h-auto bg-[#070707] p-8 rounded-xl "
         >
           <h1 className="text-3xl text-center font-bold py-4">
             Create New Channel
           </h1>
-          <label className="py-2">Channel Name</label>
+          <label htmlFor="channelName" className="py-2">
+            Channel Name
+          </label>
           <input
             name="channelName"
+            id="channelName"
             type="text"
             placeholder="new-channel"
             className="bg-white rounded-[4px] p-3 h-[38px] text-slate-950 mb-4"
@@ -112,6 +134,7 @@ function CreateChannel() {
             value={channelMembers}
             components={animatedComponents}
             name="user_ids"
+            id="user_ids"
             onChange={handleDropdownChange}
             placeholder="Add Members"
           />

@@ -60,6 +60,7 @@ function MessageArea() {
             time={"12:00:02PM"}
           />
         </div>
+        5
         <MessageInput />
       </div>
     </>
