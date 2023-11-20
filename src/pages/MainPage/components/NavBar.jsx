@@ -1,6 +1,6 @@
 import { useNavigate, NavLink } from "react-router-dom";
 
-import { toastInfo, setLocalStorage } from "../../../utils";
+import { toastInfo, deleteLocalStorage } from "../../../utils";
 
 import { GoHome, GoListOrdered, GoSignOut, GoPlus } from "react-icons/go";
 
@@ -26,7 +26,7 @@ export function NavBar() {
   const nav = useNavigate();
 
   function handleLogout() {
-    localStorage.removeItem("headerData");
+    deleteLocalStorage("headerData");
     toastInfo("Thank you for using SlaCord");
     nav("/");
   }
