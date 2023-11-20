@@ -1,8 +1,13 @@
 import { useNavigate, NavLink } from "react-router-dom";
 
 import { toastInfo, deleteLocalStorage } from "../../../utils";
-
-import { GoHome, GoListOrdered, GoSignOut, GoPlus } from "react-icons/go";
+import {
+  GoDiscussionClosed,
+  GoPersonFill,
+  GoListOrdered,
+  GoSignOut,
+  GoPlus,
+} from "react-icons/go";
 
 function NavBarItems({ name, logo, to, onClick, id }) {
   return (
@@ -34,7 +39,12 @@ export function NavBar() {
   return (
     <nav className="flex flex-col justify-between w-[5%] min-w-[80px] h-full bg-[#1e1f22] py-4 px-2">
       <div className="flex flex-col items-center gap-2">
-        <NavBarItems id="1" name="Home" to={"/app"} logo={<GoHome />} />
+        <NavBarItems
+          id="1"
+          name="Home"
+          to={"/app"}
+          logo={<GoDiscussionClosed />}
+        />
         <NavBarItems
           id="2"
           name="All Users"
@@ -43,7 +53,8 @@ export function NavBar() {
         />
         {/* <NavBarItems to={"/app/create-channel"} logo={<GoPlus />} /> */}
       </div>
-      <div className="flex justify-center items-center">
+      <div className="flex flex-col gap-2 justify-center items-center">
+        <NavBarItems to={""} logo={<GoPersonFill />} />
         <NavBarItems to={""} logo={<GoSignOut />} onClick={handleLogout} />
       </div>
     </nav>

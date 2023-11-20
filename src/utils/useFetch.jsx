@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { getLocalStorage } from "utils";
 
-export function useFetch() {
+export function useFetch(url, config) {
   const [data, setData] = useState(null);
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  async function fetchAPI(url, config) {
+  async function fetchAPI() {
     setLoading(true);
     const header_data = getLocalStorage("headerData");
     const token = header_data?.["access-token"];
@@ -26,15 +26,11 @@ export function useFetch() {
           expiry: expiry,
           uid: uid,
         },
-        body: JSON.stringify(config.body || ""),
+        body: config.body ? JSON.stringify(config.body) : null,
       });
       setResponse(response);
       const data = await response.json();
       setData(data);
-
-      console.log("RES", response);
-      console.log("DATA", response);
-
       setLoading(false);
     } catch (error) {
       setError(error);

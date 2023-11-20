@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Form, Link, NavLink, useNavigate } from "react-router-dom";
+import {
+  MemoryRouter,
+  Form,
+  Link,
+  NavLink,
+  useNavigate,
+} from "react-router-dom";
 import {
   useFetch,
   toastError,
@@ -9,9 +15,18 @@ import {
 import { InputField } from "./components/InputField";
 
 function LoginForm() {
-  const { data, response, error, loading, fetchAPI } = useFetch();
   const [input, setInput] = useState({ email: "", password: "" });
   const navigate = useNavigate();
+  const { data, response, error, loading, fetchAPI } = useFetch(
+    "/auth/sign_in",
+    {
+      method: "POST",
+      body: {
+        email: input.email,
+        password: input.password,
+      },
+    }
+  );
 
   function handleInputChange(e) {
     setInput((prev) => ({
@@ -22,15 +37,7 @@ function LoginForm() {
 
   async function handleLogin(e) {
     e.preventDefault();
-    const url = "/auth/sign_in";
-    const config = {
-      method: "POST",
-      body: {
-        email: input.email,
-        password: input.password,
-      },
-    };
-    fetchAPI(url, config);
+    fetchAPI();
   }
 
   useEffect(() => {

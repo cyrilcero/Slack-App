@@ -1,56 +1,45 @@
 import { useEffect, useState } from "react";
 import { Form, useNavigate } from "react-router-dom";
 import BarLoader from "react-spinners/BarLoader";
-
 import AsyncSelect from "react-select/async";
 import makeAnimated from "react-select/animated";
 
-import { getLocalStorage, toastError, toastSuccess } from "../../../utils";
-
-//overlay 070707
-// body 313338
-// footer/ button div bg 2b2d31
+import {
+  useFetch,
+  getLocalStorage,
+  toastError,
+  toastSuccess,
+} from "../../../utils";
 
 function CreateChannel() {
   const [channelName, setChannelName] = useState("");
   const [channelMembers, setChannelMembers] = useState([]);
+  const { data, response, error, loading, fetchAPI } = useFetch();
   const [options, setOptions] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  const navigate = useNavigate();
   const animatedComponents = makeAnimated();
+  const navigate = useNavigate();
 
   async function loadData() {
-    setLoading(true);
-    const header_data = getLocalStorage("headerData");
-    try {
-      const response = await fetch("http://206.189.91.54/api/v1/users", {
-        method: "GET",
-        headers: {
-          "access-token": header_data["access-token"],
-          client: header_data["client"],
-          expiry: header_data["expiry"],
-          uid: header_data["uid"],
-        },
-      });
-      console.log("RES", response);
-      const data = await response.json();
+    const url = "/users";
+    const config = {
+      method: "GET",
+    };
+    fetchAPI(url, config);
+  }
+
+  useEffect(() => {
+    loadData();
+    // console.log("API CALL DONE");
+  }, []);
+
+  useEffect(() => {
+    if (data) {
       const dropdown_options = data.data.flatMap((users) => [
         { value: users.id, label: users.email },
       ]);
       setOptions(dropdown_options);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      toastError("error");
     }
-  }
-
-  useEffect(() => {
-    if (!options) loadData();
-    console.log("Channel Name:", channelName);
-    console.log("Channel Members:", channelMembers);
-  }, [channelMembers, channelName, options]);
+  }, []);
 
   function handleInputChange(e) {
     setChannelName(e.target.value);
@@ -66,51 +55,29 @@ function CreateChannel() {
         const filteredOptions = options.filter((option) =>
           option.label.toLowerCase().includes(searchValue.toLowerCase())
         );
-        console.log("loadOptions:", searchValue, filteredOptions);
+        // console.log("loadOptions:", searchValue, filteredOptions);
         resolve(filteredOptions);
       }, 500);
     });
   }
 
   async function handleCreateChannelSubmit() {
-    const header_data = getLocalStorage("headerData");
-    try {
-      const response = await fetch("http://206.189.91.54/api/v1/channels", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "access-token": header_data["access-token"],
-          client: header_data["client"],
-          expiry: header_data["expiry"],
-          uid: header_data["uid"],
-        },
-        body: JSON.stringify({
-          name: channelName,
-          user_ids: channelMembers.map((item) => item.value), //must be array of IDS [123,100]
-        }),
-      });
-      // console.log(body);
-      console.log("RES", response);
-      const data = await response.json();
-      console.log("DATA", data);
+    const url = "/channels";
+    const config = {
+      method: "POST",
+      body: {
+        name: channelName,
+        user_ids: channelMembers.map((item) => item.value),
+      },
+    };
+    fetchAPI(url, config);
 
-      setChannelName("");
-      setChannelMembers([]);
-
-      /**
-       * TODO: data.errors
-       * "Name can't be blank"
-       * "Name is too short (minimum is 3 characters)"
-       */
-      if (data.errors) {
-        throw data.errors[0];
-      } else {
-        toastSuccess(`Channel ${channelName} created successfully`);
-      }
-    } catch (error) {
-      console.error(error);
-      toastError(`${error}`);
-    }
+    //   if (data.errors) {
+    //     throw data.errors[0];
+    //   } else {
+    //     toastSuccess(`Channel ${channelName} created successfully`);
+    //     navigate("/app");
+    //   }
   }
 
   if (!loading) {
@@ -141,6 +108,7 @@ function CreateChannel() {
             loadOptions={loadOptions}
             isMulti
             isClearable
+            // defaultOptions
             value={channelMembers}
             components={animatedComponents}
             name="user_ids"

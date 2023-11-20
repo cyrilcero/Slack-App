@@ -20,7 +20,14 @@ function SignUpForm() {
     password: "",
     password_confirmation: "",
   });
-  const { data, response, error, loading, fetchAPI } = useFetch();
+  const { data, response, error, loading, fetchAPI } = useFetch("/auth", {
+    method: "POST",
+    body: {
+      email: input.email,
+      password: input.password,
+      password_confirmation: input.password_confirmation,
+    },
+  });
   const navigate = useNavigate();
 
   function handleInputChange(e) {
@@ -28,20 +35,6 @@ function SignUpForm() {
       ...prev,
       [e.target.name]: e.target.value,
     }));
-  }
-
-  async function handleAccountCreation(e) {
-    e.preventDefault();
-    const url = "/auth";
-    const config = {
-      method: "POST",
-      body: {
-        email: input.email,
-        password: input.password,
-        password_confirmation: input.password_confirmation,
-      },
-    };
-    fetchAPI(url, config);
   }
 
   useEffect(() => {
@@ -81,7 +74,9 @@ function SignUpForm() {
           </NavLink>
         </div>
         <Form
-          onSubmit={handleAccountCreation}
+          onSubmit={() => {
+            fetchAPI();
+          }}
           className="flex flex-col w-full justify-center items-center bg-Horchata p-6 rounded-bl-lg rounded-br-lg shadow-md"
         >
           <InputField

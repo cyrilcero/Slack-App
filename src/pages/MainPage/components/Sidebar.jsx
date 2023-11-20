@@ -8,6 +8,7 @@ import {
 import { GoPlus, GoTriangleDown, GoTriangleRight } from "react-icons/go";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import MessageArea from "./MessageArea";
+import AsyncSelect from "react-select/async";
 
 function SideBar() {
   const [loading, setLoading] = useState(false);
@@ -127,23 +128,24 @@ function SideBar() {
             <GoPlus />
           </div>
         </div>
-
-        {messageVisibility && (
-          <div className="flex flex-col">
-            {(messageData.data || []).map((item, idx) => (
-              <NavLink
-                className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
-                key={idx}
-              >
-                <span>{item.body}</span>
-              </NavLink>
-            ))}
-          </div>
-        )}
+        <AsyncSelect />
       </div>
     </>
   );
 }
+
+// {messageVisibility && (
+//   <div className="flex flex-col">
+//     {(messageData.data || []).map((item, idx) => (
+//       <NavLink
+//         className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
+//         key={idx}
+//       >
+//         <span>{item.body}</span>
+//       </NavLink>
+//     ))}
+//   </div>
+// )}
 
 function Sidebar() {
   return (
