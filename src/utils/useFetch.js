@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getLocalStorage } from "utils";
+import { getLocalStorage, toastError } from "utils";
 
 export function useFetch(url, config) {
   const [data, setData] = useState(null);
@@ -34,6 +34,7 @@ export function useFetch(url, config) {
       setLoading(false);
     } catch (error) {
       setError(error);
+      toastError(`${error}`);
       console.error(error);
     } finally {
       setLoading(false);

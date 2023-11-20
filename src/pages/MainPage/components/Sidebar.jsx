@@ -1,76 +1,65 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
+  useFetch,
   toastError,
   getLocalStorage,
   setLocalStorage,
-  toastInfo,
 } from "../../../utils";
 import { GoPlus, GoTriangleDown, GoTriangleRight } from "react-icons/go";
-import { Outlet, NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import MessageArea from "./MessageArea";
 import AsyncSelect from "react-select/async";
+import makeAnimated from "react-select/animated";
 
-function SideBar() {
-  const [loading, setLoading] = useState(false);
-  const [channelData, setChannelData] = useState("");
+function SideBarArea({
+  getUsersData,
+  getUsersLoading,
+  getUsersFetchAPI,
+  options,
+  setOptions,
+  getChannelData,
+  getChannelLoading,
+  getChannelFetchAPI,
+  chatTarget,
+  setChatTarget,
+  loadOptions,
+  handleDropdownChange,
+  channelVisibility,
+  setChannelVisibility,
+  messageVisibility,
+  setMessageVisibility,
+}) {
+  // const [channelData, setChannelData] = useState("");
   const [messageData, setMessageData] = useState("");
-  const [channelVisibility, setChannelVisibility] = useState(true);
-  const [messageVisibility, setMessageVisibility] = useState(true);
+  const animatedComponents = makeAnimated();
   const nav = useNavigate();
 
-  async function loadChannelData() {
-    setLoading(true);
-    const header_data = getLocalStorage("headerData");
-    try {
-      const response = await fetch("http://206.189.91.54/api/v1/channels", {
-        method: "GET",
-        headers: {
-          "access-token": header_data["access-token"],
-          client: header_data["client"],
-          expiry: header_data["expiry"],
-          uid: header_data["uid"],
-        },
-      });
-      const channelData = await response.json();
-      setChannelData(channelData);
-      setLocalStorage("channelData", channelData);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      toastError(`${error}`);
+  useEffect(() => {
+    if (!getUsersData) {
+      getUsersFetchAPI();
     }
-  }
-
-  async function loadUserMessageData(id) {
-    // setLoading(true);
-    const header_data = getLocalStorage("headerData");
-    try {
-      const response = await fetch(
-        `http://206.189.91.54/api/v1/messages?receiver_id=${id}&receiver_class=User`,
-        {
-          method: "GET",
-          headers: {
-            "access-token": header_data["access-token"],
-            client: header_data["client"],
-            expiry: header_data["expiry"],
-            uid: header_data["uid"],
-          },
-        }
-      );
-      const messageData = await response.json();
-      setMessageData(messageData);
-      console.log("FETCHING");
-      console.log(messageData);
-      // toastInfo(messageData.data)
-    } catch (error) {
-      console.log(error);
-      toastError(`${error}`);
-    }
-  }
+  }, []);
 
   useEffect(() => {
-    loadChannelData();
-  }, []);
+    if (!getUsersLoading && getUsersData && !options) {
+      const dropdown_options = getUsersData.data.flatMap((users) => [
+        { value: users.id, label: users.email },
+      ]);
+      setOptions(dropdown_options);
+      console.log(options);
+    }
+  }, [getUsersData, getUsersLoading, options, setOptions]);
+
+  useEffect(() => {
+    if (!getChannelData) {
+      console.log("CHANNEL");
+      getChannelFetchAPI();
+    }
+  }, [getChannelData, getChannelFetchAPI]);
+
+  useEffect(() => {
+    console.log("CHAT TARGET", chatTarget);
+  }, [chatTarget]);
 
   return (
     <>
@@ -95,7 +84,7 @@ function SideBar() {
           </div>
         </div>
 
-        {channelVisibility && (
+        {!getChannelLoading && getChannelData && (
           <div className="flex flex-col">
             <NavLink
               onClick={() => loadUserMessageData(4248)}
@@ -105,7 +94,7 @@ function SideBar() {
               <span>CYRIL</span>
             </NavLink>
 
-            {(channelData.data || []).map((item, idx) => (
+            {getChannelData.data.map((item) => (
               <NavLink
                 onClick={() => loadUserMessageData(item.id)}
                 className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
@@ -128,30 +117,81 @@ function SideBar() {
             <GoPlus />
           </div>
         </div>
-        <AsyncSelect />
+        <AsyncSelect
+          className="mb-4 text-black"
+          loadOptions={loadOptions}
+          isClearable
+          // defaultOptions
+          value={chatTarget}
+          components={animatedComponents}
+          name="user_ids"
+          id="user_ids"
+          onChange={handleDropdownChange}
+          placeholder="Select User"
+        />
       </div>
     </>
   );
 }
 
-// {messageVisibility && (
-//   <div className="flex flex-col">
-//     {(messageData.data || []).map((item, idx) => (
-//       <NavLink
-//         className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
-//         key={idx}
-//       >
-//         <span>{item.body}</span>
-//       </NavLink>
-//     ))}
-//   </div>
-// )}
-
 function Sidebar() {
+  const {
+    data: getChannelData,
+    loading: getChannelLoading,
+    fetchAPI: getChannelFetchAPI,
+  } = useFetch("/channels", {
+    method: "GET",
+  });
+
+  const {
+    data: getUsersData,
+    loading: getUsersLoading,
+    fetchAPI: getUsersFetchAPI,
+  } = useFetch("/users", {
+    method: "GET",
+  });
+  const [options, setOptions] = useState(null);
+  const [chatTarget, setChatTarget] = useState([]);
+  const [channelVisibility, setChannelVisibility] = useState(true);
+  const [messageVisibility, setMessageVisibility] = useState(true);
+
+  function loadOptions(searchValue) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const filteredOptions = options.filter((option) =>
+          option.label.toLowerCase().includes(searchValue.toLowerCase())
+        );
+        // console.log("loadOptions:", searchValue, filteredOptions);
+        resolve(filteredOptions);
+      }, 500);
+    });
+  }
+
+  function handleDropdownChange(selectedOptions) {
+    setChatTarget(selectedOptions);
+  }
+
   return (
     <>
-      <SideBar />
-      <MessageArea />
+      <SideBarArea
+        getUsersData={getUsersData}
+        getUsersLoading={getUsersLoading}
+        getUsersFetchAPI={getUsersFetchAPI}
+        options={options}
+        setOptions={setOptions}
+        getChannelData={getChannelData}
+        getChannelLoading={getChannelLoading}
+        getChannelFetchAPI={getChannelFetchAPI}
+        chatTarget={chatTarget}
+        setChatTarget={setChatTarget}
+        loadOptions={loadOptions}
+        handleDropdownChange={handleDropdownChange}
+        channelVisibility={channelVisibility}
+        setChannelVisibility={setChannelVisibility}
+        messageVisibility={messageVisibility}
+        setMessageVisibility={setMessageVisibility}
+      />
+      <MessageArea chatTarget={chatTarget} />
     </>
   );
 }

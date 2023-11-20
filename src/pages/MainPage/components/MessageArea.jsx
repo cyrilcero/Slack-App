@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Form } from "react-router-dom";
 import {
   GoPaperAirplane,
@@ -44,12 +44,12 @@ function Message({ user, message, time }) {
   );
 }
 
-function MessageArea() {
+function MessageArea({ chatTarget }) {
   return (
     <>
       <div className="p-4 w-full h-full">
         <div id="message_details" className="w-full h-[10%] p-4 bg-[#232428]">
-          MESSAGE DETAILS
+          {chatTarget.label}
         </div>
         <div className="flex flex-col-reverse w-full h-[80%] p-4 bg-[#313338] gap-2">
           <Message user={"CyrilCero"} message="lorem" time={"12:00:01PM"} />
@@ -60,7 +60,6 @@ function MessageArea() {
             time={"12:00:02PM"}
           />
         </div>
-        5
         <MessageInput />
       </div>
     </>
