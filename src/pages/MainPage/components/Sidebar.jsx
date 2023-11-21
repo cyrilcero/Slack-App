@@ -109,7 +109,7 @@ function SideBarArea({
         <AsyncSelect
           className="mb-4 text-black"
           loadOptions={loadOptions}
-          // isClearable
+          isClearable
           cacheOptions
           // defaultOptions
           value={chatTarget}
@@ -151,7 +151,9 @@ function Sidebar() {
     loading: getMessageLoading,
     fetchAPI: getMessageFetchAPI,
   } = useFetch(
-    `/messages?receiver_id=${chatTarget.value}&receiver_class=User`,
+    `/messages?receiver_id=${
+      chatTarget && chatTarget.value ? chatTarget.value : ""
+    }&receiver_class=User`,
     {
       method: "GET",
     }

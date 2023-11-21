@@ -4,6 +4,7 @@ import {
   GoPaperAirplane,
   GoPerson,
   GoHeart,
+  GoThumbsdown,
   GoHeartFill,
 } from "react-icons/go";
 import {
@@ -24,7 +25,7 @@ function MessageInput({ chatTarget }) {
   } = useFetch("/messages", {
     method: "POST",
     body: {
-      receiver_id: chatTarget.value,
+      receiver_id: chatTarget ? chatTarget.value : "",
       receiver_class: "User",
       body: chatData,
     },
@@ -133,18 +134,23 @@ function MessageArea({
         </div>
         {!getMessageLoading && getMessageData && (
           <div className="flex flex-col-reverse w-full h-[80%] p-4 bg-[#313338] overflow-y-auto">
-            {!getMessageLoading &&
+            {!chatTarget ? (
+              <div className="flex flex-col items-center justify-center w-full h-full text-3xl">
+                <GoThumbsdown className="text-9xl" /> No chat selected
+              </div>
+            ) : (
               (getMessageData.data || [])
                 .toReversed()
-                .map((data) => (
+                .map((data, idx) => (
                   <Message
-                    key={data.id}
+                    key={idx}
                     message={data.body}
                     time={formatDate(data.created_at)}
                     user={data.sender.uid}
                     sender={currentID === data.sender.id ? false : true}
                   />
-                ))}
+                ))
+            )}
           </div>
         )}
 
