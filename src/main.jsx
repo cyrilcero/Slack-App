@@ -13,6 +13,9 @@ import Sidebar from "./pages/MainPage/components/Sidebar.jsx";
 import AllUsers from "./pages/MainPage/components/AllUsers";
 import CreateChannel from "./pages/MainPage/components/CreateChannel.jsx";
 import { ProtectedRoute } from "./utils";
+import MessageArea, {
+  EmptyChat,
+} from "./pages/MainPage/components/MessageArea.jsx";
 
 const routes = createBrowserRouter([
   {
@@ -38,16 +41,25 @@ const routes = createBrowserRouter([
     ),
     children: [
       {
-        index: true,
         element: <Sidebar />,
-      },
-      {
-        path: "all-users",
-        element: <AllUsers />,
+        children: [
+          {
+            index: true,
+            element: <EmptyChat />,
+          },
+          {
+            path: ":id",
+            element: <MessageArea />,
+          },
+        ],
       },
       {
         path: "create-channel",
         element: <CreateChannel />,
+      },
+      {
+        path: "all-users",
+        element: <AllUsers />,
       },
     ],
   },

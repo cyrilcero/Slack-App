@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Form } from "react-router-dom";
+import { Form, useOutletContext } from "react-router-dom";
 import {
   GoPaperAirplane,
   GoPerson,
@@ -115,14 +115,20 @@ function Message({ user, message, time, sender }) {
   );
 }
 
-function MessageArea({
-  chatTarget,
-  getMessageData,
-  getMessageLoading,
-  getMessageFetchAPI,
-}) {
+export function EmptyChat() {
+  return (
+    <div className="flex flex-col items-center justify-center w-full h-full text-3xl">
+      <GoThumbsdown className="text-9xl" /> No chat selected
+    </div>
+  );
+}
+
+function MessageArea() {
+  const [chatTarget, getMessageData, getMessageLoading, getMessageFetchAPI] =
+    useOutletContext();
   const loginData = getLocalStorage("LoginData");
   const currentID = loginData.data.id;
+
   return (
     <>
       <div className="p-4 w-full h-full">
@@ -135,9 +141,7 @@ function MessageArea({
         {!getMessageLoading && getMessageData && (
           <div className="flex flex-col-reverse w-full h-[80%] p-4 bg-[#313338] overflow-y-auto">
             {!chatTarget ? (
-              <div className="flex flex-col items-center justify-center w-full h-full text-3xl">
-                <GoThumbsdown className="text-9xl" /> No chat selected
-              </div>
+              <EmptyChat></EmptyChat>
             ) : (
               (getMessageData.data || [])
                 .toReversed()

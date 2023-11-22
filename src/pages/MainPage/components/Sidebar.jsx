@@ -129,7 +129,7 @@ function Sidebar() {
   const [chatTarget, setChatTarget] = useState([]);
   const [channelVisibility, setChannelVisibility] = useState(true);
   const [messageVisibility, setMessageVisibility] = useState(true);
-
+  const navigate = useNavigate();
   const {
     data: getChannelData,
     loading: getChannelLoading,
@@ -184,6 +184,11 @@ function Sidebar() {
 
   function handleDropdownChange(selectedOptions) {
     setChatTarget(selectedOptions);
+    if (!selectedOptions) {
+      navigate(`/app`);
+    } else {
+      navigate(`/app/${selectedOptions.value}`);
+    }
   }
 
   return (
@@ -217,12 +222,12 @@ function Sidebar() {
           getMessageFetchAPI,
         ]}
       />
-      <MessageArea
+      {/* <MessageArea
         chatTarget={chatTarget}
         getMessageData={getMessageData}
         getMessageLoading={getMessageLoading}
         getMessageFetchAPI={getMessageFetchAPI}
-      />
+      /> */}
     </>
   );
 }
