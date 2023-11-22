@@ -1,12 +1,7 @@
-import { useContext, useEffect, useState } from "react";
-import {
-  useFetch,
-  toastError,
-  getLocalStorage,
-  setLocalStorage,
-} from "../../../utils";
+import { useEffect, useState } from "react";
+import { useFetch } from "../../../utils";
 import { GoPlus, GoTriangleDown, GoTriangleRight } from "react-icons/go";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import MessageArea from "./MessageArea";
 import AsyncSelect from "react-select/async";
 import makeAnimated from "react-select/animated";
@@ -59,6 +54,10 @@ function SideBarArea({
     }
   }, [getChannelData, getChannelFetchAPI]);
 
+  useEffect(() => {
+    console.log("CHANNEL DATA", getChannelData);
+  }, [getChannelData]);
+
   return (
     <>
       <div className="flex flex-col w-1/4 min-w-[250px] p-4 h-full bg-[#2b2d31]">
@@ -88,6 +87,7 @@ function SideBarArea({
               <NavLink
                 className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
                 key={item.id}
+                to={`/app/${item.id}`}
               >
                 <span>{item.name}</span>
               </NavLink>
@@ -208,6 +208,14 @@ function Sidebar() {
         getMessageData={getMessageData}
         getMessageLoading={getMessageLoading}
         getMessageFetchAPI={getMessageFetchAPI}
+      />
+      <Outlet
+        context={[
+          chatTarget,
+          getMessageData,
+          getMessageLoading,
+          getMessageFetchAPI,
+        ]}
       />
       <MessageArea
         chatTarget={chatTarget}
