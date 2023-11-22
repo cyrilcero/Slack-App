@@ -101,7 +101,7 @@ function CreateChannel() {
 
   if (!getUsersLoading) {
     return (
-      <div className="flex flex-col w-full h-full m-4 justify-center items-center">
+      <div className="flex flex-col w-full h-full p-4 justify-center items-center">
         <Form
           onSubmit={handleChannelCreationSubmit}
           className="flex flex-col w-1/2 h-auto bg-[#070707] p-8 rounded-xl "

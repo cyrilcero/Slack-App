@@ -55,9 +55,7 @@ function MessageInput({ chatTarget, getChannelMessageFetchAPI }) {
 
   // run fetch para magbago yung state during loading state
   useEffect(() => {
-    if (sendChatLoading) {
-      getChannelMessageFetchAPI();
-    }
+    getChannelMessageFetchAPI();
   }, [sendChatLoading]);
 
   return (
@@ -97,7 +95,13 @@ function Message({ user, message, time, sender }) {
           : "flex items-center justify-end w-full "
       }
     >
-      <div className="flex items-center w-1/2 h-auto">
+      <div
+        className={
+          sender === true
+            ? "flex items-center w-1/2 h-auto"
+            : "flex items-center justify-end w-1/2 h-auto"
+        }
+      >
         <GoPerson className="min-w-[50px] min-h-[50px] aspect-square rounded-full bg-slate-700" />
         <div className="flex flex-col justify-center p-4">
           <div className="flex">
@@ -182,11 +186,11 @@ function ChannelMessageArea() {
         {!getChannelDetailsLoading && (
           <div
             id="message_details"
-            className="flex items-center justify-between w-full h-[10%] p-4 bg-[#232428] text-3xl font-semibold text-ellipsis"
+            className="flex items-center justify-between w-full h-[10%] p-4 bg-[#232428] text-3xl font-semibold text-ellipsis rounded-lg"
           >
             <div className="flex gap-2">
               <span>{getChannelDetailsData?.data?.name}</span>
-              <div className="font-light">
+              <div className="font-light text-gray-500">
                 {findUsers(getUsersData, getChannelMembers())}
               </div>
             </div>
@@ -208,7 +212,7 @@ function ChannelMessageArea() {
                     key={idx}
                     message={data.body}
                     time={formatDate(data.created_at)}
-                    user={data.sender.uid}
+                    user={trimEmail(data.sender.uid)}
                     sender={currentID === data.sender.id ? false : true}
                   />
                 ))

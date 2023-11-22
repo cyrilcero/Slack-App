@@ -88,6 +88,9 @@ function SideBarArea({
                 className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
                 key={item.id}
                 to={`/app/c/${item.id}`}
+                onClick={() => {
+                  setChatTarget("");
+                }}
               >
                 <span>{item.name}</span>
               </NavLink>

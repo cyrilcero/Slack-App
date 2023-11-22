@@ -95,7 +95,13 @@ function Message({ user, message, time, sender }) {
           : "flex items-center justify-end w-full "
       }
     >
-      <div className="flex items-center w-1/2 h-auto">
+      <div
+        className={
+          sender === true
+            ? "flex items-center w-1/2 h-auto"
+            : "flex items-center justify-end w-1/2 h-auto"
+        }
+      >
         <GoPerson className="min-w-[50px] min-h-[50px] aspect-square rounded-full bg-slate-700" />
         <div className="flex flex-col justify-center p-4">
           <div className="flex">
@@ -124,8 +130,13 @@ export function NoSelectedChat() {
 }
 
 function MessageArea() {
-  const [chatTarget, getMessageData, getMessageLoading, getMessageFetchAPI] =
-    useOutletContext();
+  const [
+    chatTarget,
+    getMessageData,
+    getMessageLoading,
+    getMessageFetchAPI,
+    getUsersData,
+  ] = useOutletContext();
   const loginData = getLocalStorage("LoginData");
   const currentID = loginData.data.id;
 
@@ -134,7 +145,7 @@ function MessageArea() {
       <div className="p-4 w-full h-full">
         <div
           id="message_details"
-          className="flex items-center w-full h-[10%] p-4 bg-[#232428] text-3xl font-semibold text-ellipsis"
+          className="flex items-center w-full h-[10%] p-4 bg-[#232428] text-3xl font-semibold text-ellipsis rounded-lg"
         >
           {!chatTarget ? "" : `${trimEmail(chatTarget.label || "")}`}
         </div>
