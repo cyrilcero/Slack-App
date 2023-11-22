@@ -14,8 +14,9 @@ import AllUsers from "./pages/MainPage/components/AllUsers";
 import CreateChannel from "./pages/MainPage/components/CreateChannel.jsx";
 import { ProtectedRoute } from "./utils";
 import MessageArea, {
-  EmptyChat,
+  NoSelectedChat,
 } from "./pages/MainPage/components/MessageArea.jsx";
+import ChannelMessageArea from "./pages/MainPage/components/ChannelMessageArea.jsx";
 
 const routes = createBrowserRouter([
   {
@@ -45,11 +46,15 @@ const routes = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <EmptyChat />,
+            element: <NoSelectedChat />,
           },
           {
-            path: ":id",
+            path: "t/:id",
             element: <MessageArea />,
+          },
+          {
+            path: "c/:id",
+            element: <ChannelMessageArea />,
           },
         ],
       },
