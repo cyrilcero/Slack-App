@@ -54,9 +54,9 @@ function SideBarArea({
     }
   }, [getChannelData, getChannelFetchAPI]);
 
-  useEffect(() => {
-    console.log("CHANNEL DATA", getChannelData);
-  }, [getChannelData]);
+  // useEffect(() => {
+  //   console.log("CHANNEL DATA", getChannelData);
+  // }, [getChannelData]);
 
   return (
     <>
@@ -87,7 +87,7 @@ function SideBarArea({
               <NavLink
                 className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
                 key={item.id}
-                to={`/app/${item.id}`}
+                to={`/app/c/${item.id}`}
               >
                 <span>{item.name}</span>
               </NavLink>
@@ -187,7 +187,7 @@ function Sidebar() {
     if (!selectedOptions) {
       navigate(`/app`);
     } else {
-      navigate(`/app/${selectedOptions.value}`);
+      navigate(`/app/t/${selectedOptions.value}`);
     }
   }
 
@@ -220,14 +220,9 @@ function Sidebar() {
           getMessageData,
           getMessageLoading,
           getMessageFetchAPI,
+          getUsersData,
         ]}
       />
-      {/* <MessageArea
-        chatTarget={chatTarget}
-        getMessageData={getMessageData}
-        getMessageLoading={getMessageLoading}
-        getMessageFetchAPI={getMessageFetchAPI}
-      /> */}
     </>
   );
 }

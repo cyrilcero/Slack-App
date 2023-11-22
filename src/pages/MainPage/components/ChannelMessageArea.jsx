@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { Form, useOutletContext } from "react-router-dom";
+import { Form, useOutletContext, useParams } from "react-router-dom";
 import {
   GoPaperAirplane,
   GoPerson,
   GoHeart,
-  GoThumbsdown,
+  GoComment,
   GoHeartFill,
+  GoPlus,
 } from "react-icons/go";
 import {
   getLocalStorage,
@@ -16,7 +17,7 @@ import {
   toastSuccess,
 } from "../../../utils";
 
-function MessageInput({ chatTarget }) {
+function MessageInput({ chatTarget, getChannelMessageFetchAPI }) {
   const [chatData, setChatData] = useState("");
   const {
     data: sendChatData,
@@ -25,12 +26,13 @@ function MessageInput({ chatTarget }) {
   } = useFetch("/messages", {
     method: "POST",
     body: {
-      receiver_id: chatTarget ? chatTarget.value : "",
-      receiver_class: "User",
+      receiver_id: chatTarget ? chatTarget : "",
+      receiver_class: "Channel",
       body: chatData,
     },
   });
-  function handleSubmit(e) {
+
+  async function handleSubmit(e) {
     e.preventDefault();
     if (chatTarget == false) {
       toastError("Receipient Missing!");
@@ -41,22 +43,22 @@ function MessageInput({ chatTarget }) {
       setChatData("");
       toastSuccess("Message sent!");
     }
-    // window.location.reload();
   }
 
-  useEffect(() => {
-    console.log("CHAT TEXT", chatData);
-    console.log("CHAT DATA", sendChatData);
-    console.log("CHAT TARGET", chatTarget);
-  }, [chatData, sendChatData, chatTarget]);
+  //   useEffect(() => {
+  //     if (sendChatData) {
+  //       toastError(sendChatData.errors);
+  //     } else {
+  //       console.log("message sent");
+  //     }
+  //   }, [sendChatData]);
 
+  // run fetch para magbago yung state during loading state
   useEffect(() => {
-    if (sendChatData) {
-      toastError(sendChatData.errors);
-    } else {
-      console.log("message sent");
+    if (sendChatLoading) {
+      getChannelMessageFetchAPI();
     }
-  }, [sendChatData]);
+  }, [sendChatLoading]);
 
   return (
     <Form
@@ -115,35 +117,91 @@ function Message({ user, message, time, sender }) {
   );
 }
 
-export function NoSelectedChat() {
+export function EmptyChat() {
   return (
     <div className="flex flex-col items-center justify-center w-full h-full text-3xl">
-      <GoThumbsdown className="text-9xl" /> No chat selected
+      <GoComment className="text-9xl" /> Send your first chat
     </div>
   );
 }
 
-function MessageArea() {
-  const [chatTarget, getMessageData, getMessageLoading, getMessageFetchAPI] =
-    useOutletContext();
+function ChannelMessageArea() {
   const loginData = getLocalStorage("LoginData");
   const currentID = loginData.data.id;
+  const [
+    chatTarget,
+    getMessageData,
+    getMessageLoading,
+    getMessageFetchAPI,
+    getUsersData,
+  ] = useOutletContext();
+  const { id } = useParams();
+  const {
+    data: getChannelMessageData,
+    loading: getChannelMessageLoading,
+    fetchAPI: getChannelMessageFetchAPI,
+  } = useFetch(`/messages?receiver_id=${id}&receiver_class=Channel`, {
+    method: "GET",
+  });
+  const {
+    data: getChannelDetailsData,
+    loading: getChannelDetailsLoading,
+    fetchAPI: getChannelDetailsFetchAPI,
+  } = useFetch(`/channels/${id}`, {
+    method: "GET",
+  });
+
+  useEffect(() => {
+    getChannelMessageFetchAPI();
+    getChannelDetailsFetchAPI();
+  }, [id]);
+
+  //   useEffect(() => {
+  //     console.log(getChannelMessageData);
+  //   }, [getChannelMessageData]);
+
+  function getChannelMembers() {
+    const members = getChannelDetailsData?.data?.channel_members?.map(
+      (member) => member.user_id
+    );
+    return members;
+  }
+
+  function findUsers(usersData, array) {
+    const users = usersData?.data
+      .filter((item) => array?.includes(item.id))
+      .map((item) => trimEmail(item.email))
+      .join(", ");
+
+    return users;
+  }
 
   return (
     <>
       <div className="p-4 w-full h-full">
-        <div
-          id="message_details"
-          className="flex items-center w-full h-[10%] p-4 bg-[#232428] text-3xl font-semibold text-ellipsis"
-        >
-          {!chatTarget ? "" : `${trimEmail(chatTarget.label || "")}`}
-        </div>
-        {!getMessageLoading && getMessageData && (
+        {!getChannelDetailsLoading && (
+          <div
+            id="message_details"
+            className="flex items-center justify-between w-full h-[10%] p-4 bg-[#232428] text-3xl font-semibold text-ellipsis"
+          >
+            <div className="flex gap-2">
+              <span>{getChannelDetailsData?.data?.name}</span>
+              <div className="font-light">
+                {findUsers(getUsersData, getChannelMembers())}
+              </div>
+            </div>
+
+            <div className="bg-[#2b2d31] p-2 rounded-lg">
+              <GoPlus />
+            </div>
+          </div>
+        )}
+        {!getChannelMessageLoading && getChannelMessageData && (
           <div className="flex flex-col-reverse w-full h-[80%] p-4 bg-[#313338] overflow-y-auto">
-            {!chatTarget ? (
-              <NoSelectedChat></NoSelectedChat>
+            {getChannelMessageData.data.length === 0 ? (
+              <EmptyChat></EmptyChat>
             ) : (
-              (getMessageData.data || [])
+              (getChannelMessageData?.data || [])
                 .toReversed()
                 .map((data, idx) => (
                   <Message
@@ -158,10 +216,13 @@ function MessageArea() {
           </div>
         )}
 
-        <MessageInput chatTarget={chatTarget} />
+        <MessageInput
+          chatTarget={id}
+          getChannelMessageFetchAPI={getChannelMessageFetchAPI}
+        />
       </div>
     </>
   );
 }
 
-export default MessageArea;
+export default ChannelMessageArea;
