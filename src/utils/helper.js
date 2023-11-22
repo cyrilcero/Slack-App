@@ -16,7 +16,7 @@ export function formatDate(inputDateString) {
 
   const formattedDate = `${year}-${month}-${day} ${
     hours % 12 || 12
-  }:${minutes}:${seconds} ${ampm}`;
+  }:${minutes} ${ampm}`;
 
   return formattedDate;
 }
