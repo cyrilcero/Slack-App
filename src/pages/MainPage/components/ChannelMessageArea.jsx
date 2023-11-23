@@ -91,7 +91,10 @@ function MessageInput({ chatTarget, getChannelMessageFetchAPI }) {
   );
 }
 
-function AddChannelMemberModal({ setModalVisibility }) {
+function AddChannelMemberModal({
+  setModalVisibility,
+  getChannelDetailsFetchAPI,
+}) {
   const [
     chatTarget,
     getMessageData,
@@ -148,6 +151,7 @@ function AddChannelMemberModal({ setModalVisibility }) {
     if (!addChannelMemberLoading && addChannelMemberData) {
       if (!addChannelMemberData.errors) {
         toastSuccess(`Added ${channelMember.label} to the channel`);
+        getChannelDetailsFetchAPI();
         setModalVisibility(false);
       } else {
         toastError(`${addChannelMemberData.errors}`);
@@ -158,7 +162,7 @@ function AddChannelMemberModal({ setModalVisibility }) {
   return (
     <>
       <section className="flex justify-center items-center w-full h-full p-4 bg-[#070707]">
-        <Form
+        <form
           className="bg-[#313338] flex flex-col w-1/2 h-auto p-8 rounded-xl "
           onSubmit={handleAddChannelMember}
         >
@@ -188,6 +192,7 @@ function AddChannelMemberModal({ setModalVisibility }) {
               Close
             </button>
             <button
+              type="submit"
               disabled={!channelMember}
               className={
                 !channelMember
@@ -198,7 +203,7 @@ function AddChannelMemberModal({ setModalVisibility }) {
               Create Channel
             </button>
           </div>
-        </Form>
+        </form>
       </section>
     </>
   );
@@ -303,7 +308,10 @@ function ChannelMessageArea() {
   return (
     <>
       {modalVisibility ? (
-        <AddChannelMemberModal setModalVisibility={setModalVisibility} />
+        <AddChannelMemberModal
+          setModalVisibility={setModalVisibility}
+          getChannelDetailsFetchAPI={getChannelDetailsFetchAPI}
+        />
       ) : (
         <div className="p-4 w-full h-full">
           {!getChannelDetailsLoading && (
