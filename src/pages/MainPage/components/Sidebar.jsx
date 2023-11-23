@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { useFetch } from "../../../utils";
-import { GoPlus, GoTriangleDown, GoTriangleRight } from "react-icons/go";
+import {
+  GoPlus,
+  GoHash,
+  GoTriangleDown,
+  GoTriangleRight,
+} from "react-icons/go";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import MessageArea from "./MessageArea";
 import AsyncSelect from "react-select/async";
 import makeAnimated from "react-select/animated";
 
@@ -66,17 +70,16 @@ function SideBarArea({
                   : "transition-all -rotate-90 ease-in duration-200"
               }
             >
-              {/* {channelVisibility ? <GoTriangleDown /> : <GoTriangleRight />} */}
               <GoTriangleDown />
             </div>
-            <span>Channels</span>
+            <span className="font-bold">Channels</span>
           </div>
           <div onClick={() => nav("create-channel")}>
             <GoPlus />
           </div>
         </div>
 
-        {!getChannelLoading && getChannelData && (
+        {!getChannelLoading && getChannelData && channelVisibility && (
           <div className="flex flex-col max-h-[30%] overflow-y-auto">
             {getChannelData.data.map((item) => (
               <NavLink
@@ -96,16 +99,14 @@ function SideBarArea({
         <div className="flex items-center justify-between text-xl">
           <div className="flex items-center gap-2 py-4">
             <div onClick={() => setMessageVisibility(!messageVisibility)}>
-              {messageVisibility ? <GoTriangleDown /> : <GoTriangleRight />}
+              <GoHash />
             </div>
-            <span>Direct Messages</span>
-          </div>
-          <div>
-            <GoPlus />
+            <span className="font-bold">Direct Messages</span>
           </div>
         </div>
+
         <AsyncSelect
-          className="mb-4 text-black"
+          className="text-black"
           loadOptions={loadOptions}
           isClearable
           cacheOptions
@@ -117,6 +118,17 @@ function SideBarArea({
           onChange={handleDropdownChange}
           placeholder="Select User"
         />
+
+        <div className="flex items-center justify-between text-xl">
+          <div className="flex items-center gap-2 py-4">
+            <div onClick={() => setMessageVisibility(!messageVisibility)}>
+              {messageVisibility ? <GoTriangleDown /> : <GoTriangleRight />}
+            </div>
+            <span>Recent Messages</span>
+          </div>
+
+          {/* INSERT "RECENT MESSAGES HERE" */}
+        </div>
       </div>
     </>
   );
