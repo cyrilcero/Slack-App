@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { Form, useOutletContext, useParams } from "react-router-dom";
+import {
+  Form,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from "react-router-dom";
 import {
   GoPaperAirplane,
   GoPerson,
@@ -8,6 +13,7 @@ import {
   GoHeartFill,
   GoPlus,
 } from "react-icons/go";
+import AsyncSelect from "react-select/async";
 import {
   getLocalStorage,
   useFetch,
@@ -85,6 +91,119 @@ function MessageInput({ chatTarget, getChannelMessageFetchAPI }) {
   );
 }
 
+function AddChannelMemberModal({ setModalVisibility }) {
+  const [
+    chatTarget,
+    getMessageData,
+    getMessageLoading,
+    getMessageFetchAPI,
+    getUsersData,
+  ] = useOutletContext();
+  const navigate = useNavigate();
+  const [channelMember, setChannelMember] = useState("");
+  const { id } = useParams();
+  const options = getUsersData?.data?.flatMap((users) => [
+    { value: users.id, label: users.email },
+  ]);
+
+  const {
+    data: addChannelMemberData,
+    loading: addChannelMemberLoading,
+    fetchAPI: addChannelMemberFetchAPI,
+  } = useFetch(`/channel/add_member`, {
+    method: "POST",
+    body: {
+      id: `${id}`,
+      member_id: channelMember?.value,
+    },
+  });
+
+  function handleAddChannelMember(e) {
+    e.preventDefault();
+    addChannelMemberFetchAPI();
+  }
+
+  function handleDropdownChange(selectedOptions) {
+    setChannelMember(selectedOptions);
+  }
+
+  function loadOptions(searchValue) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const filteredOptions = options.filter((option) =>
+          option.label.toLowerCase().includes(searchValue.toLowerCase())
+        );
+        // console.log("loadOptions:", searchValue, filteredOptions);
+        resolve(filteredOptions);
+      }, 500);
+    });
+  }
+
+  useEffect(() => {
+    console.log(channelMember);
+    console.log("add member", addChannelMemberData);
+  }, [channelMember, addChannelMemberData]);
+
+  useEffect(() => {
+    if (!addChannelMemberLoading && addChannelMemberData) {
+      if (!addChannelMemberData.errors) {
+        toastSuccess(`Added ${channelMember.label} to the channel`);
+        setModalVisibility(false);
+      } else {
+        toastError(`${addChannelMemberData.errors}`);
+      }
+    }
+  }, [addChannelMemberLoading, addChannelMemberData]);
+
+  return (
+    <>
+      <section className="flex justify-center items-center w-full h-full p-4 bg-[#070707]">
+        <Form
+          className="bg-[#313338] flex flex-col w-1/2 h-auto p-8 rounded-xl "
+          onSubmit={handleAddChannelMember}
+        >
+          <h1 className="text-3xl text-center font-bold py-4">
+            Add Channel Member
+          </h1>
+          <label htmlFor="channelMember" className="py-2">
+            Select User
+          </label>
+          <AsyncSelect
+            className="mb-4 text-black"
+            loadOptions={loadOptions}
+            // isMulti
+            isClearable
+            // defaultOptions
+            value={channelMember}
+            name="channelMember"
+            id="channelMember"
+            onChange={handleDropdownChange}
+            placeholder="Add Channel Member"
+          />
+          <div className="flex justify-end gap-4 pt-4">
+            <button
+              className="bg-transparent rounded-lg h-12 p-2 px-6"
+              onClick={() => setModalVisibility(false)}
+            >
+              Close
+            </button>
+            <button
+              disabled={!channelMember}
+              className={
+                !channelMember
+                  ? "bg-SlackGreen/[40%] rounded-lg h-12 p-2 px-6"
+                  : "bg-SlackGreen rounded-lg h-12 p-2 px-6"
+              }
+            >
+              Create Channel
+            </button>
+          </div>
+        </Form>
+      </section>
+    </>
+  );
+}
+
 function Message({ user, message, time, sender }) {
   const [heartVisibility, setHeartVisibility] = useState(true);
   return (
@@ -130,6 +249,7 @@ export function EmptyChat() {
 }
 
 function ChannelMessageArea() {
+  const [modalVisibility, setModalVisibility] = useState(false);
   const loginData = getLocalStorage("LoginData");
   const currentID = loginData.data.id;
   const [
@@ -160,9 +280,9 @@ function ChannelMessageArea() {
     getChannelDetailsFetchAPI();
   }, [id]);
 
-  //   useEffect(() => {
-  //     console.log(getChannelMessageData);
-  //   }, [getChannelMessageData]);
+  // useEffect(() => {
+  //   getChannelDetailsFetchAPI();
+  // }, [getChannelMessageData]);
 
   function getChannelMembers() {
     const members = getChannelDetailsData?.data?.channel_members?.map(
@@ -182,49 +302,53 @@ function ChannelMessageArea() {
 
   return (
     <>
-      <div className="p-4 w-full h-full">
-        {!getChannelDetailsLoading && (
-          <div
-            id="message_details"
-            className="flex items-center justify-between w-full h-[10%] p-4 bg-[#232428] text-3xl font-semibold text-ellipsis rounded-lg"
-          >
-            <div className="flex gap-2">
-              <span>{getChannelDetailsData?.data?.name}</span>
-              <div className="font-light text-gray-500">
-                {findUsers(getUsersData, getChannelMembers())}
+      {modalVisibility ? (
+        <AddChannelMemberModal setModalVisibility={setModalVisibility} />
+      ) : (
+        <div className="p-4 w-full h-full">
+          {!getChannelDetailsLoading && (
+            <div
+              id="message_details"
+              className="flex items-center justify-between w-full h-[10%] p-4 bg-[#232428] text-3xl font-semibold text-ellipsis rounded-lg"
+            >
+              <div className="flex gap-2">
+                <span>{getChannelDetailsData?.data?.name}</span>
+                <div className="font-light text-gray-500">
+                  {findUsers(getUsersData, getChannelMembers())}
+                </div>
+              </div>
+
+              <div className="bg-[#2b2d31] p-2 rounded-lg">
+                <GoPlus onClick={() => setModalVisibility(true)} />
               </div>
             </div>
-
-            <div className="bg-[#2b2d31] p-2 rounded-lg">
-              <GoPlus />
+          )}
+          {!getChannelMessageLoading && getChannelMessageData && (
+            <div className="flex flex-col-reverse w-full h-[80%] p-4 bg-[#313338] overflow-y-auto">
+              {getChannelMessageData.data.length === 0 ? (
+                <EmptyChat></EmptyChat>
+              ) : (
+                (getChannelMessageData?.data || [])
+                  .toReversed()
+                  .map((data, idx) => (
+                    <Message
+                      key={idx}
+                      message={data.body}
+                      time={formatDate(data.created_at)}
+                      user={trimEmail(data.sender.uid)}
+                      sender={currentID === data.sender.id ? false : true}
+                    />
+                  ))
+              )}
             </div>
-          </div>
-        )}
-        {!getChannelMessageLoading && getChannelMessageData && (
-          <div className="flex flex-col-reverse w-full h-[80%] p-4 bg-[#313338] overflow-y-auto">
-            {getChannelMessageData.data.length === 0 ? (
-              <EmptyChat></EmptyChat>
-            ) : (
-              (getChannelMessageData?.data || [])
-                .toReversed()
-                .map((data, idx) => (
-                  <Message
-                    key={idx}
-                    message={data.body}
-                    time={formatDate(data.created_at)}
-                    user={trimEmail(data.sender.uid)}
-                    sender={currentID === data.sender.id ? false : true}
-                  />
-                ))
-            )}
-          </div>
-        )}
+          )}
 
-        <MessageInput
-          chatTarget={id}
-          getChannelMessageFetchAPI={getChannelMessageFetchAPI}
-        />
-      </div>
+          <MessageInput
+            chatTarget={id}
+            getChannelMessageFetchAPI={getChannelMessageFetchAPI}
+          />
+        </div>
+      )}
     </>
   );
 }

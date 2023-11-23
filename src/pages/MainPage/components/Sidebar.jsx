@@ -45,12 +45,7 @@ function SideBarArea({
 
   useEffect(() => {
     if (!getChannelData) {
-      // console.log("CHANNEL");
       getChannelFetchAPI();
-    } else {
-      if (getChannelData.errors) {
-        getChannelFetchAPI();
-      }
     }
   }, [getChannelData, getChannelFetchAPI]);
 

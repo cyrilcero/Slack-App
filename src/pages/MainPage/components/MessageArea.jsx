@@ -41,14 +41,13 @@ function MessageInput({ chatTarget }) {
       setChatData("");
       toastSuccess("Message sent!");
     }
-    // window.location.reload();
   }
 
-  useEffect(() => {
-    console.log("CHAT TEXT", chatData);
-    console.log("CHAT DATA", sendChatData);
-    console.log("CHAT TARGET", chatTarget);
-  }, [chatData, sendChatData, chatTarget]);
+  // useEffect(() => {
+  //   console.log("CHAT TEXT", chatData);
+  //   console.log("CHAT DATA", sendChatData);
+  //   console.log("CHAT TARGET", chatTarget);
+  // }, [chatData, sendChatData, chatTarget]);
 
   useEffect(() => {
     if (sendChatData) {
