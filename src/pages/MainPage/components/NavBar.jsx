@@ -1,5 +1,5 @@
+import { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
-
 import { toastInfo, deleteLocalStorage } from "../../../utils";
 import {
   GoDiscussionClosed,
@@ -27,15 +27,44 @@ function NavBarItems({ name, logo, to, onClick, id }) {
     // </Tooltip>
   );
 }
-export function NavBar() {
-  const navigate = useNavigate();
 
+export function Logout() {
+  const navigate = useNavigate();
   function handleLogout() {
     deleteLocalStorage("headerData");
     deleteLocalStorage("LoginData");
     toastInfo("Thank you for using SlaCord");
     navigate("/");
   }
+  return (
+    <>
+      <div className="flex justify-center items-center w-full h-screen p-4 bg-[#313338]">
+        <div className="flex flex-col w-1/4 h-auto bg-[#070707] p-8 rounded-xl text-white">
+          <h1 className="text-3xl text-center font-bold py-4">
+            Leaving already?{" "}
+          </h1>
+          <div className="flex item-center justify-center gap-4 pt-4">
+            <button
+              className="bg-transparent rounded-lg h-12 p-2 px-6"
+              onClick={() => navigate("/app")}
+            >
+              Close
+            </button>
+            <button
+              onClick={handleLogout}
+              className={"bg-SlackGreen rounded-lg h-12 p-2 px-6"}
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export function NavBar() {
+  const navigate = useNavigate();
 
   return (
     <nav className="flex flex-col justify-between w-[5%] min-w-[80px] h-full bg-[#1e1f22] py-4 px-2">
@@ -56,7 +85,11 @@ export function NavBar() {
       </div>
       <div className="flex flex-col gap-2 justify-center items-center">
         <NavBarItems to={""} logo={<GoPersonFill />} />
-        <NavBarItems to={""} logo={<GoSignOut />} onClick={handleLogout} />
+        <NavBarItems
+          to={""}
+          logo={<GoSignOut />}
+          onClick={() => navigate("/logout")}
+        />
       </div>
     </nav>
   );
