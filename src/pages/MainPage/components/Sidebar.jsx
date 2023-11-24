@@ -81,7 +81,7 @@ function SideBarArea({
 
         {!getChannelLoading && getChannelData && channelVisibility && (
           <div className="flex flex-col max-h-[30%] overflow-y-auto">
-            {getChannelData.data.map((item) => (
+            {getChannelData?.data?.map((item) => (
               <NavLink
                 className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
                 key={item.id}
