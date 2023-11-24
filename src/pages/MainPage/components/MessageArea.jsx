@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Form, useOutletContext } from "react-router-dom";
+import { Form, useOutletContext, useParams } from "react-router-dom";
 import {
   GoPaperAirplane,
   GoPerson,
@@ -16,7 +16,7 @@ import {
   toastSuccess,
 } from "../../../utils";
 
-function MessageInput({ chatTarget }) {
+function MessageInput({ chatTarget, getMessageFetchAPI }) {
   const [chatData, setChatData] = useState("");
   const {
     data: sendChatData,
@@ -40,6 +40,7 @@ function MessageInput({ chatTarget }) {
       sendChatFetchAPI();
       setChatData("");
       toastSuccess("Message sent!");
+      getMessageFetchAPI();
     }
   }
 
@@ -138,7 +139,11 @@ function MessageArea() {
   ] = useOutletContext();
   const loginData = getLocalStorage("LoginData");
   const currentID = loginData.data.id;
-
+  useEffect(() => {
+    if (getMessageLoading) {
+      getMessageFetchAPI();
+    }
+  }, [getMessageLoading]);
   return (
     <>
       <div className="p-4 w-full h-full">
@@ -160,7 +165,7 @@ function MessageArea() {
                     key={idx}
                     message={data.body}
                     time={formatDate(data.created_at)}
-                    user={data.sender.uid}
+                    user={trimEmail(data.sender.uid)}
                     sender={currentID === data.sender.id ? false : true}
                   />
                 ))
@@ -168,7 +173,10 @@ function MessageArea() {
           </div>
         )}
 
-        <MessageInput chatTarget={chatTarget} />
+        <MessageInput
+          chatTarget={chatTarget}
+          getMessageFetchAPI={getMessageFetchAPI}
+        />
       </div>
     </>
   );
