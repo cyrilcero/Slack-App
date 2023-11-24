@@ -18,6 +18,7 @@ import MessageArea, {
 } from "./pages/MainPage/components/MessageArea.jsx";
 import ChannelMessageArea from "./pages/MainPage/components/ChannelMessageArea.jsx";
 import ErrorPage from "./pages/ErrorPage/ErrorPage.jsx";
+import { Logout } from "./pages/MainPage/components/NavBar.jsx";
 
 const routes = createBrowserRouter([
   {
@@ -81,6 +82,15 @@ const routes = createBrowserRouter([
         errorElement: <ErrorPage />,
       },
     ],
+  },
+  {
+    path: "/logout",
+    element: (
+      <ProtectedRoute>
+        <Logout />
+      </ProtectedRoute>
+    ),
+    errorElement: <ErrorPage />,
   },
 ]);
 
