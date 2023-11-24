@@ -32,6 +32,7 @@ export function NavBar() {
 
   function handleLogout() {
     deleteLocalStorage("headerData");
+    deleteLocalStorage("LoginData");
     toastInfo("Thank you for using SlaCord");
     navigate("/");
   }
