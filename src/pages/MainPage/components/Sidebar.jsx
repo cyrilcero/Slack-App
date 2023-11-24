@@ -6,7 +6,7 @@ import {
   GoTriangleDown,
   GoTriangleRight,
 } from "react-icons/go";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate, useParams } from "react-router-dom";
 import AsyncSelect from "react-select/async";
 import makeAnimated from "react-select/animated";
 
@@ -140,6 +140,7 @@ function Sidebar() {
   const [channelVisibility, setChannelVisibility] = useState(true);
   const [messageVisibility, setMessageVisibility] = useState(true);
   const navigate = useNavigate();
+  const { id } = useParams();
   const {
     data: getChannelData,
     loading: getChannelLoading,
@@ -161,9 +162,7 @@ function Sidebar() {
     loading: getMessageLoading,
     fetchAPI: getMessageFetchAPI,
   } = useFetch(
-    `/messages?receiver_id=${
-      chatTarget && chatTarget.value ? chatTarget.value : ""
-    }&receiver_class=User`,
+    `/messages?receiver_id=${chatTarget && id ? id : ""}&receiver_class=User`,
     {
       method: "GET",
     }
