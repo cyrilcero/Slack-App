@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  toastError,
-  getLocalStorage,
-} from "../../../utils";
+import { toastError, getLocalStorage } from "../../../utils";
 import BarLoader from "react-spinners/BarLoader";
 
 function AllUsers() {
@@ -15,10 +12,6 @@ function AllUsersTable() {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  /**
-   * TODO: add loading states / effects
-   */
 
   async function loadData() {
     setLoading(true);
