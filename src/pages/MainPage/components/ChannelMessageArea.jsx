@@ -200,7 +200,7 @@ function AddChannelMemberModal({
                   : "bg-SlackGreen rounded-lg h-12 p-2 px-6"
               }
             >
-              Create Channel
+              Add Member
             </button>
           </div>
         </form>
@@ -321,7 +321,7 @@ function ChannelMessageArea() {
             >
               <div className="flex gap-2">
                 <span>{getChannelDetailsData?.data?.name}</span>
-                <div className="font-light text-gray-500">
+                <div className="font-light text-gray-500 text-ellipsis">
                   {findUsers(getUsersData, getChannelMembers())}
                 </div>
               </div>
