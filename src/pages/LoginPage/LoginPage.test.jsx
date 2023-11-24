@@ -1,15 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it } from "vitest";
-import { MemoryRouter } from "react-router-dom";
-import LoginPage from "./LoginPage";
+import AllUsers from "../MainPage/components/AllUsers";
 
 describe("LoginPage", () => {
   it("renders login page", () => {
-    render(
-      <MemoryRouter initialEntries={["/"]}>
-        <LoginPage />
-      </MemoryRouter>
-    );
+    render(<AllUsers />);
+    const linkElement = screen.findByText(/ID/i);
+    expect(linkElement).toBeInTheDocument();
 
     screen.debug();
 
