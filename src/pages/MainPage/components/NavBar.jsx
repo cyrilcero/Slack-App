@@ -11,11 +11,6 @@ import {
 
 function NavBarItems({ name, logo, to, onClick, id }) {
   return (
-    // <Tooltip content={name} place="right" anchorSelect={id}>
-
-    /**
-     * TODO: ADD TOOLTIP AND ACTIVE STATE FOR NAVLINK
-     */
     <NavLink
       id={id}
       to={to}
