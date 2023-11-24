@@ -25,7 +25,7 @@ function MessageInput({ chatTarget, getMessageFetchAPI }) {
   } = useFetch("/messages", {
     method: "POST",
     body: {
-      receiver_id: chatTarget ? chatTarget.value : "",
+      receiver_id: chatTarget ? chatTarget : "",
       receiver_class: "User",
       body: chatData,
     },
@@ -33,7 +33,7 @@ function MessageInput({ chatTarget, getMessageFetchAPI }) {
   function handleSubmit(e) {
     e.preventDefault();
     if (chatTarget == false) {
-      toastError("Receipient Missing!");
+      toastError("Recipient Missing!");
     } else if (!chatData) {
       toastError("Message Missing!");
     } else {
@@ -53,9 +53,10 @@ function MessageInput({ chatTarget, getMessageFetchAPI }) {
   useEffect(() => {
     if (sendChatData) {
       toastError(sendChatData.errors);
-    } else {
-      console.log("message sent");
     }
+    // else {
+    //   console.log("message sent");
+    // }
   }, [sendChatData]);
 
   return (
@@ -137,25 +138,39 @@ function MessageArea() {
     getMessageFetchAPI,
     getUsersData,
   ] = useOutletContext();
+  const { id } = useParams();
   const loginData = getLocalStorage("LoginData");
   const currentID = loginData.data.id;
+
+  function findUser(target) {
+    return getUsersData?.data?.find((user) => user.id === target);
+  }
+  const userData = findUser(Number(id));
+
+  useEffect(() => {
+    getMessageFetchAPI();
+  }, [id]);
+
   useEffect(() => {
     if (getMessageLoading) {
       getMessageFetchAPI();
     }
   }, [getMessageLoading]);
+
   return (
     <>
       <div className="p-4 w-full h-full">
-        <div
-          id="message_details"
-          className="flex items-center w-full h-[10%] p-4 bg-[#232428] text-3xl font-semibold text-ellipsis rounded-lg"
-        >
-          {!chatTarget ? "" : `${trimEmail(chatTarget.label || "")}`}
-        </div>
+        {getUsersData && (
+          <div
+            id="message_details"
+            className="flex items-center w-full h-[10%] p-4 bg-[#232428] text-3xl font-semibold text-ellipsis rounded-lg"
+          >
+            {trimEmail(userData?.uid)}
+          </div>
+        )}
         {!getMessageLoading && getMessageData && (
           <div className="flex flex-col-reverse w-full h-[80%] p-4 bg-[#313338] overflow-y-auto">
-            {!chatTarget ? (
+            {!id ? (
               <NoSelectedChat></NoSelectedChat>
             ) : (
               (getMessageData.data || [])
@@ -173,10 +188,7 @@ function MessageArea() {
           </div>
         )}
 
-        <MessageInput
-          chatTarget={chatTarget}
-          getMessageFetchAPI={getMessageFetchAPI}
-        />
+        <MessageInput chatTarget={id} getMessageFetchAPI={getMessageFetchAPI} />
       </div>
     </>
   );
