@@ -133,7 +133,7 @@ function AddChannelMemberModal({
   function loadOptions(searchValue) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const filteredOptions = options.filter((option) =>
+        const filteredOptions = options?.filter((option) =>
           option.label.toLowerCase().includes(searchValue.toLowerCase())
         );
         // console.log("loadOptions:", searchValue, filteredOptions);
