@@ -83,21 +83,25 @@ function SideBarArea({
               <GoPlus />
             </div>
           </div>
-          {!getChannelLoading && getChannelData && channelVisibility && (
-            <div className="flex flex-col max-h-[30%] overflow-y-auto">
-              {getChannelData?.data?.map((item) => (
-                <Link
-                  className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
-                  key={item.id}
-                  to={`/app/c/${item.id}`}
-                  onClick={() => {
-                    setChatTarget("");
-                  }}
-                >
-                  <span>{item.name}</span>
-                </Link>
-              ))}
-            </div>
+          {getChannelData ? (
+            channelVisibility && (
+              <div className="flex flex-col max-h-[30%] overflow-y-auto">
+                {getChannelData?.data?.map((item) => (
+                  <Link
+                    className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
+                    key={item.id}
+                    to={`/app/c/${item.id}`}
+                    onClick={() => {
+                      setChatTarget("");
+                    }}
+                  >
+                    <span>{item.name}</span>
+                  </Link>
+                ))}
+              </div>
+            )
+          ) : (
+            <PulseLoader color="#36d7b7" />
           )}
           <div className="flex items-center justify-between text-xl">
             <div className="flex items-center gap-2 py-4">
@@ -136,21 +140,25 @@ function SideBarArea({
               <span className="font-bold">Recent Messages</span>
             </div>
           </div>
-          {messageVisibility && (
-            <div className="flex flex-col ">
-              {membersWithChatHistory?.map((items, idx) => (
-                <Link
-                  className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
-                  key={idx}
-                  to={`/app/t/${items.id}`}
-                  onClick={() => {
-                    setChatTarget("");
-                  }}
-                >
-                  {trimEmail(items.email)}
-                </Link>
-              ))}
-            </div>
+          {membersWithChatHistory ? (
+            messageVisibility && (
+              <div className="flex flex-col ">
+                {membersWithChatHistory?.map((items, idx) => (
+                  <Link
+                    className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
+                    key={idx}
+                    to={`/app/t/${items.id}`}
+                    onClick={() => {
+                      setChatTarget("");
+                    }}
+                  >
+                    {trimEmail(items.email)}
+                  </Link>
+                ))}
+              </div>
+            )
+          ) : (
+            <PulseLoader color="#36d7b7" />
           )}
         </div>
       ) : (
@@ -219,11 +227,6 @@ function Sidebar() {
   }, [globalOptions]);
 
   useEffect(() => {
-    console.log("GLOBAL OPTIONS", globalOptions);
-    console.log("GLOBAL USER DATA", getGlobalUsersData);
-  }, [globalOptions, getGlobalUsersData]);
-
-  useEffect(() => {
     if (getChannelData) {
       setLoading(true);
       getAllChannelDetails();
@@ -261,45 +264,43 @@ function Sidebar() {
   }
 
   async function getAllChannelDetails() {
-    const allChannelID = getChannelData.data.map((channel) => channel.id);
-    try {
-      const arrayOfPromises = allChannelID.map(async (id) => {
-        const response = await fetch(
-          `http://206.189.91.54/api/v1/channels/${id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "access-token": token,
-              client: client,
-              expiry: expiry,
-              uid: uid,
-            },
-          }
+    if (getChannelData) {
+      const allChannelID = getChannelData.data.map((channel) => channel.id);
+      try {
+        const arrayOfPromises = allChannelID.map(async (id) => {
+          const response = await fetch(
+            `http://206.189.91.54/api/v1/channels/${id}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                "access-token": token,
+                client: client,
+                expiry: expiry,
+                uid: uid,
+              },
+            }
+          );
+          const data = await response.json();
+          return data;
+        });
+        const accumulatedPromise = await Promise.all(arrayOfPromises);
+        const allUserIDS = accumulatedPromise.map((item) =>
+          item.data.channel_members.map((member) => member.user_id)
         );
-        const data = await response.json();
-        return data;
-      });
-      const accumulatedPromise = await Promise.all(arrayOfPromises);
-      const allUserIDS = accumulatedPromise.map((item) =>
-        item.data.channel_members.map((member) => member.user_id)
-      );
-      const flattenedAllUserIDS = allUserIDS.flat();
-      const uniqueUserIDsSet = new Set(flattenedAllUserIDS);
-      const uniqueUserIDs = Array.from(uniqueUserIDsSet);
+        const flattenedAllUserIDS = allUserIDS.flat();
+        const uniqueUserIDsSet = new Set(flattenedAllUserIDS);
+        const uniqueUserIDs = Array.from(uniqueUserIDsSet);
 
-      setUniqueIDS(uniqueUserIDs);
-      console.log("MY_GLOBAL_USERS_ID", uniqueUserIDs);
-      console.log("MY_getGlobalUsersData", getGlobalUsersData);
-      const filteredMembers = await findUsers(
-        getGlobalUsersData,
-        uniqueUserIDs
-      );
-      console.log("FIND USERS", filteredMembers);
-      setGlobalOptions(filteredMembers);
-      console.log("GLOBAL OPTIONS", globalOptions);
-    } catch (error) {
-      console.error(error);
+        setUniqueIDS(uniqueUserIDs);
+        const filteredMembers = await findUsers(
+          getGlobalUsersData,
+          uniqueUserIDs
+        );
+        setGlobalOptions(filteredMembers);
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
 
@@ -338,7 +339,6 @@ function Sidebar() {
               };
         });
       setMembersWithChatHistory(withHistory);
-      console.log("MEMBERS WITH HISTORY", withHistory);
       // setLoading(false);
     } catch (error) {
       console.error(error);
