@@ -177,6 +177,9 @@ function Sidebar() {
   const [messageVisibility, setMessageVisibility] = useState(true);
 
   const [uniqueIDS, setUniqueIDS] = useState(null);
+
+  const [memberChange, setMemberChange] = useState(0);
+
   const [globalOptions, setGlobalOptions] = useState(null);
   const [membersWithChatHistory, setMembersWithChatHistory] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -209,16 +212,19 @@ function Sidebar() {
     method: "GET",
   });
 
+  //load
   useEffect(() => {
     if (!getGlobalUsersData) {
       getGlobalUsersFetchAPI();
     }
   }, []);
 
+  //load
   useEffect(() => {
     getGlobalUsersFetchAPI();
   }, []);
 
+  //handle set global options if not prese
   useEffect(() => {
     if (!globalOptions) {
       getAllChannelDetails();
@@ -234,9 +240,24 @@ function Sidebar() {
   }, [getChannelData]);
 
   useEffect(() => {
+    getAllChannelDetails();
+    getDropDownOptions();
+    setInterval(
+      setGlobalOptions(findUsers(getGlobalUsersData, uniqueIDS)),
+      500
+    );
+    getDropDownOptions();
+    console.log("MEMBER CHANGE", memberChange);
+  }, [memberChange]);
+
+  useEffect(() => {
     if (uniqueIDS) {
       getRecentMessages();
     }
+  }, [uniqueIDS]);
+
+  useEffect(() => {
+    getDropDownOptions();
   }, [uniqueIDS]);
 
   useEffect(() => {
@@ -265,9 +286,9 @@ function Sidebar() {
 
   async function getAllChannelDetails() {
     if (getChannelData) {
-      const allChannelID = getChannelData.data.map((channel) => channel.id);
+      const allChannelID = getChannelData?.data?.map((channel) => channel.id);
       try {
-        const arrayOfPromises = allChannelID.map(async (id) => {
+        const arrayOfPromises = allChannelID?.map(async (id) => {
           const response = await fetch(
             `http://206.189.91.54/api/v1/channels/${id}`,
             {
@@ -285,23 +306,31 @@ function Sidebar() {
           return data;
         });
         const accumulatedPromise = await Promise.all(arrayOfPromises);
-        const allUserIDS = accumulatedPromise.map((item) =>
+        const allUserIDS = accumulatedPromise?.map((item) =>
           item.data.channel_members.map((member) => member.user_id)
         );
         const flattenedAllUserIDS = allUserIDS.flat();
         const uniqueUserIDsSet = new Set(flattenedAllUserIDS);
         const uniqueUserIDs = Array.from(uniqueUserIDsSet);
-
         setUniqueIDS(uniqueUserIDs);
-        const filteredMembers = await findUsers(
-          getGlobalUsersData,
-          uniqueUserIDs
-        );
+        console.log("uniqueUserIDs", uniqueUserIDs);
+
+        const filteredMembers = await findUsers(getGlobalUsersData, uniqueIDS);
         setGlobalOptions(filteredMembers);
+
+        console.log("filteredMembers", filteredMembers);
+        console.log("getAllChannelDetails");
       } catch (error) {
         console.error(error);
       }
     }
+  }
+
+  async function getDropDownOptions() {
+    const filteredMembers = await findUsers(getGlobalUsersData, uniqueIDS);
+    setGlobalOptions(filteredMembers);
+    console.log("filteredMembers", filteredMembers);
+    console.log("getAllChannelDetails");
   }
 
   async function getRecentMessages() {
@@ -339,7 +368,8 @@ function Sidebar() {
               };
         });
       setMembersWithChatHistory(withHistory);
-      // setLoading(false);
+      console.log("getRecentMessages");
+      setLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -367,7 +397,15 @@ function Sidebar() {
         setMessageVisibility={setMessageVisibility}
         membersWithChatHistory={membersWithChatHistory}
       />
-      <Outlet context={[chatTarget, getGlobalUsersData]} />
+      <Outlet
+        context={[
+          chatTarget,
+          getGlobalUsersData,
+          memberChange,
+          setMemberChange,
+          getChannelFetchAPI,
+        ]}
+      />
     </>
   );
 }
