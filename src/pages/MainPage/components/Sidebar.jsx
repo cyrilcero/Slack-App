@@ -23,12 +23,13 @@ import makeAnimated from "react-select/animated";
 import { PulseLoader } from "react-spinners";
 
 function SideBarArea({
-  globalOptions,
-  getUsersData,
-  getUsersLoading,
-  getUsersFetchAPI,
+  loading,
   options,
   setOptions,
+  globalOptions,
+  getGlobalUsers,
+  getGlobalUsersLoading,
+  getGlobalUsersFetchAPI,
   getChannelData,
   getChannelLoading,
   getChannelFetchAPI,
@@ -40,26 +41,19 @@ function SideBarArea({
   messageVisibility,
   setMessageVisibility,
   membersWithChatHistory,
-  loading,
 }) {
   const animatedComponents = makeAnimated();
   const nav = useNavigate();
 
   useEffect(() => {
-    if (!getUsersData) {
-      getUsersFetchAPI();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!getUsersLoading && getUsersData && !options) {
-      const dropdown_options = getUsersData.data.flatMap((users) => [
+    if (!getGlobalUsersLoading && getGlobalUsers && !options) {
+      const dropdown_options = getGlobalUsers.data.flatMap((users) => [
         { value: users.id, label: users.email },
       ]);
       setOptions(dropdown_options);
       // console.log(options);
     }
-  }, [getUsersData, getUsersLoading, options, setOptions]);
+  }, [getGlobalUsers, getGlobalUsersLoading, options, setOptions]);
 
   useEffect(() => {
     if (!getChannelData) {
@@ -117,6 +111,7 @@ function SideBarArea({
             className="text-black"
             options={globalOptions}
             isClearable
+            // isDisabled={globalOptions}
             // cacheOptions
             // defaultOptions
             value={chatTarget}
@@ -128,26 +123,35 @@ function SideBarArea({
           />
           <div className="flex items-center justify-between text-xl">
             <div className="flex items-center gap-2 py-4">
-              <div onClick={() => setMessageVisibility(!messageVisibility)}>
-                {messageVisibility ? <GoTriangleDown /> : <GoTriangleRight />}
+              <div
+                onClick={() => setMessageVisibility(!messageVisibility)}
+                className={
+                  messageVisibility
+                    ? "transition-all ease-in duration-200"
+                    : "transition-all -rotate-90 ease-in duration-200"
+                }
+              >
+                <GoTriangleDown />
               </div>
               <span className="font-bold">Recent Messages</span>
             </div>
           </div>
-          <div className="flex flex-col ">
-            {membersWithChatHistory?.map((items, idx) => (
-              <Link
-                className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
-                key={idx}
-                to={`/app/t/${items.id}`}
-                onClick={() => {
-                  setChatTarget("");
-                }}
-              >
-                {trimEmail(items.email)}
-              </Link>
-            ))}
-          </div>{" "}
+          {messageVisibility && (
+            <div className="flex flex-col ">
+              {membersWithChatHistory?.map((items, idx) => (
+                <Link
+                  className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
+                  key={idx}
+                  to={`/app/t/${items.id}`}
+                  onClick={() => {
+                    setChatTarget("");
+                  }}
+                >
+                  {trimEmail(items.email)}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       ) : (
         <div className="flex items-center justify-center flex-col w-1/4 min-w-[250px] p-4 h-full bg-[#2b2d31]">
@@ -163,19 +167,24 @@ function Sidebar() {
   const [chatTarget, setChatTarget] = useState([]);
   const [channelVisibility, setChannelVisibility] = useState(true);
   const [messageVisibility, setMessageVisibility] = useState(true);
+
   const [uniqueIDS, setUniqueIDS] = useState(null);
   const [globalOptions, setGlobalOptions] = useState(null);
   const [membersWithChatHistory, setMembersWithChatHistory] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
   const { id } = useParams();
+
   const header_data = getLocalStorage("headerData");
   const loginData = getLocalStorage("LoginData");
+
   const currentUserID = loginData.data.id;
   const token = header_data?.["access-token"];
   const client = header_data?.["client"];
   const expiry = header_data?.["expiry"];
   const uid = header_data?.["uid"];
+
   const {
     data: getChannelData,
     loading: getChannelLoading,
@@ -185,27 +194,54 @@ function Sidebar() {
   });
 
   const {
-    data: getUsersData,
-    loading: getUsersLoading,
-    fetchAPI: getUsersFetchAPI,
+    data: getGlobalUsersData,
+    loading: getGlobalUsersLoading,
+    fetchAPI: getGlobalUsersFetchAPI,
   } = useFetch("/users", {
     method: "GET",
   });
 
-  // useEffect(() => {
-  //   console.log("MESSAGE DATA", getMessageData);
-  // }, [getMessageData]);
-  // useEffect(() => {
-  //   console.log("MD", getMessageData);
-  //   console.log("TARGET", chatTarget);
-  // }, [getMessageData, chatTarget]);
+  useEffect(() => {
+    if (!getGlobalUsersData) {
+      getGlobalUsersFetchAPI();
+    }
+  }, []);
 
-  // useEffect(() => {
-  //   if (id) {
-  //     console.log("AFTER APICALL", getMessageData);
-  //     getMessageFetchAPI();
-  //   }
-  // }, [chatTarget]);
+  useEffect(() => {
+    getGlobalUsersFetchAPI();
+  }, []);
+
+  useEffect(() => {
+    if (!globalOptions) {
+      getAllChannelDetails();
+      setGlobalOptions(findUsers(getGlobalUsersData, uniqueIDS));
+    }
+  }, [globalOptions]);
+
+  useEffect(() => {
+    console.log("GLOBAL OPTIONS", globalOptions);
+    console.log("GLOBAL USER DATA", getGlobalUsersData);
+  }, [globalOptions, getGlobalUsersData]);
+
+  useEffect(() => {
+    if (getChannelData) {
+      setLoading(true);
+      getAllChannelDetails();
+    }
+  }, [getChannelData]);
+
+  useEffect(() => {
+    if (uniqueIDS) {
+      getRecentMessages();
+    }
+  }, [uniqueIDS]);
+
+  useEffect(() => {
+    if (getGlobalUsersData) {
+      setLoading(false);
+      getAllChannelDetails();
+    }
+  }, [getGlobalUsersData]);
 
   function handleDropdownChange(selectedOptions) {
     setChatTarget(selectedOptions);
@@ -254,12 +290,14 @@ function Sidebar() {
 
       setUniqueIDS(uniqueUserIDs);
       console.log("MY_GLOBAL_USERS_ID", uniqueUserIDs);
-
-      findUsers(getUsersData, uniqueUserIDs);
-
-      const filteredMembers = findUsers(getUsersData, uniqueUserIDs);
+      console.log("MY_getGlobalUsersData", getGlobalUsersData);
+      const filteredMembers = await findUsers(
+        getGlobalUsersData,
+        uniqueUserIDs
+      );
+      console.log("FIND USERS", filteredMembers);
       setGlobalOptions(filteredMembers);
-      console.log("MY_GLOBAL_USERS", filteredMembers);
+      console.log("GLOBAL OPTIONS", globalOptions);
     } catch (error) {
       console.error(error);
     }
@@ -301,34 +339,22 @@ function Sidebar() {
         });
       setMembersWithChatHistory(withHistory);
       console.log("MEMBERS WITH HISTORY", withHistory);
-      setLoading(false);
+      // setLoading(false);
     } catch (error) {
       console.error(error);
     }
   }
 
-  useEffect(() => {
-    if (getChannelData) {
-      setLoading(true);
-      getAllChannelDetails();
-    }
-  }, [getChannelData]);
-
-  useEffect(() => {
-    if (uniqueIDS) {
-      getRecentMessages();
-    }
-  }, [uniqueIDS]);
-
   return (
     <>
       <SideBarArea
-        globalOptions={globalOptions}
-        getUsersData={getUsersData}
-        getUsersLoading={getUsersLoading}
-        getUsersFetchAPI={getUsersFetchAPI}
+        loading={loading}
         options={options}
         setOptions={setOptions}
+        globalOptions={globalOptions}
+        getUsersData={getGlobalUsersData}
+        getUsersLoading={getGlobalUsersLoading}
+        getUsersFetchAPI={getGlobalUsersFetchAPI}
         getChannelData={getChannelData}
         getChannelLoading={getChannelLoading}
         getChannelFetchAPI={getChannelFetchAPI}
@@ -340,9 +366,8 @@ function Sidebar() {
         messageVisibility={messageVisibility}
         setMessageVisibility={setMessageVisibility}
         membersWithChatHistory={membersWithChatHistory}
-        loading={loading}
       />
-      <Outlet context={[chatTarget, getUsersData]} />
+      <Outlet context={[chatTarget, getGlobalUsersData]} />
     </>
   );
 }
