@@ -331,12 +331,12 @@ function ChannelMessageArea() {
               </div>
             </div>
           )}
-          {!getChannelMessageLoading && getChannelMessageData && (
+          {!getChannelDetailsLoading && getChannelMessageData && (
             <div className="flex flex-col-reverse w-full h-[80%] p-4 bg-[#313338] overflow-y-auto">
               {getChannelMessageData.data.length === 0 ? (
                 <EmptyChat></EmptyChat>
               ) : (
-                (getChannelMessageData?.data || [])
+                getChannelMessageData?.data
                   .toReversed()
                   .map((data, idx) => (
                     <Message
@@ -351,10 +351,12 @@ function ChannelMessageArea() {
             </div>
           )}
 
-          <MessageInput
-            chatTarget={id}
-            getChannelMessageFetchAPI={getChannelMessageFetchAPI}
-          />
+          {!getChannelDetailsLoading && (
+            <MessageInput
+              chatTarget={id}
+              getChannelMessageFetchAPI={getChannelMessageFetchAPI}
+            />
+          )}
         </div>
       )}
     </>
