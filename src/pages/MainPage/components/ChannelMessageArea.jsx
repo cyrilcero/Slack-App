@@ -276,10 +276,6 @@ function ChannelMessageArea() {
   }, [id]);
 
   useEffect(() => {
-    console.log("CH DETS DATA", getChannelDetailsData);
-  }, [getChannelDetailsData]);
-
-  useEffect(() => {
     console.log("USERS DATA", getGlobalUsersData);
   }, [getGlobalUsersData]);
 
@@ -312,7 +308,7 @@ function ChannelMessageArea() {
             id="message_details"
             className="flex items-center justify-between w-full h-[10%] p-4 bg-[#232428] text-3xl font-semibold text-ellipsis rounded-lg"
           >
-            {!getChannelDetailsLoading && getChannelMessageData ? (
+            {getChannelMessageData ? (
               <div className="flex gap-2">
                 <span>{getChannelDetailsData.data.name}</span>
                 <div className="font-light text-gray-500 text-ellipsis">
@@ -330,7 +326,7 @@ function ChannelMessageArea() {
             </div>
           </div>
 
-          {!getChannelDetailsLoading && getChannelMessageData && (
+          {getChannelMessageData && (
             <div className="flex flex-col-reverse w-full h-[80%] p-4 bg-[#313338] overflow-y-auto">
               {getChannelMessageData.data.length === 0 ? (
                 <EmptyChat />
@@ -350,7 +346,7 @@ function ChannelMessageArea() {
             </div>
           )}
 
-          {!getChannelDetailsLoading && getChannelMessageData && (
+          {getChannelMessageData && (
             <MessageInput
               chatTarget={id}
               getChannelMessageFetchAPI={getChannelMessageFetchAPI}
