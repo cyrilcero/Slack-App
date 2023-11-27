@@ -4,7 +4,7 @@ import {
   GoPaperAirplane,
   GoPerson,
   GoHeart,
-  GoThumbsdown,
+  GoHubot,
   GoHeartFill,
 } from "react-icons/go";
 import {
@@ -128,7 +128,7 @@ function Message({ user, message, time, sender }) {
 export function NoSelectedChat() {
   return (
     <div className="flex flex-col items-center justify-center w-full h-full text-3xl">
-      <GoThumbsdown className="text-9xl" /> No chat selected
+      <GoHubot className="text-9xl" /> Welcome to SlaCord!
     </div>
   );
 }
