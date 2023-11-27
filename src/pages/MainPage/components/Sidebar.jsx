@@ -11,11 +11,19 @@ import {
   GoTriangleDown,
   GoTriangleRight,
 } from "react-icons/go";
-import { NavLink, Outlet, useNavigate, useParams } from "react-router-dom";
-import AsyncSelect from "react-select/async";
+import {
+  NavLink,
+  Link,
+  Outlet,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+import Select from "react-select";
 import makeAnimated from "react-select/animated";
+import { PulseLoader } from "react-spinners";
 
 function SideBarArea({
+  globalOptions,
   getUsersData,
   getUsersLoading,
   getUsersFetchAPI,
@@ -26,13 +34,13 @@ function SideBarArea({
   getChannelFetchAPI,
   chatTarget,
   setChatTarget,
-  loadOptions,
   handleDropdownChange,
   channelVisibility,
   setChannelVisibility,
   messageVisibility,
   setMessageVisibility,
   membersWithChatHistory,
+  loading,
 }) {
   const animatedComponents = makeAnimated();
   const nav = useNavigate();
@@ -59,92 +67,93 @@ function SideBarArea({
     }
   }, [getChannelData, getChannelFetchAPI]);
 
-  // useEffect(() => {
-  //   console.log("CHANNEL DATA", getChannelData);
-  // }, [getChannelData]);
-
   return (
     <>
-      <div className="flex flex-col w-1/4 min-w-[250px] p-4 h-full bg-[#2b2d31]">
-        <div className="flex items-center justify-between text-xl">
-          <div className="flex items-center gap-2 py-2">
-            <div
-              onClick={() => setChannelVisibility(!channelVisibility)}
-              className={
-                channelVisibility
-                  ? "transition-all ease-in duration-200"
-                  : "transition-all -rotate-90 ease-in duration-200"
-              }
-            >
-              <GoTriangleDown />
+      {!loading ? (
+        <div className="flex flex-col w-1/4 min-w-[250px] p-4 h-full bg-[#2b2d31]">
+          <div className="flex items-center justify-between text-xl">
+            <div className="flex items-center gap-2 py-2">
+              <div
+                onClick={() => setChannelVisibility(!channelVisibility)}
+                className={
+                  channelVisibility
+                    ? "transition-all ease-in duration-200"
+                    : "transition-all -rotate-90 ease-in duration-200"
+                }
+              >
+                <GoTriangleDown />
+              </div>
+              <span className="font-bold">Channels</span>
             </div>
-            <span className="font-bold">Channels</span>
+            <div onClick={() => nav("create-channel")}>
+              <GoPlus />
+            </div>
           </div>
-          <div onClick={() => nav("create-channel")}>
-            <GoPlus />
+          {!getChannelLoading && getChannelData && channelVisibility && (
+            <div className="flex flex-col max-h-[30%] overflow-y-auto">
+              {getChannelData?.data?.map((item) => (
+                <Link
+                  className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
+                  key={item.id}
+                  to={`/app/c/${item.id}`}
+                  onClick={() => {
+                    setChatTarget("");
+                  }}
+                >
+                  <span>{item.name}</span>
+                </Link>
+              ))}
+            </div>
+          )}
+          <div className="flex items-center justify-between text-xl">
+            <div className="flex items-center gap-2 py-4">
+              <div onClick={() => setMessageVisibility(!messageVisibility)}>
+                <GoHash />
+              </div>
+              <span className="font-bold">Direct Messages</span>
+            </div>
           </div>
-        </div>
-
-        {!getChannelLoading && getChannelData && channelVisibility && (
-          <div className="flex flex-col max-h-[30%] overflow-y-auto">
-            {getChannelData?.data?.map((item) => (
-              <NavLink
+          <Select
+            className="text-black"
+            options={globalOptions}
+            isClearable
+            // cacheOptions
+            // defaultOptions
+            value={chatTarget}
+            components={animatedComponents}
+            name="user_ids"
+            id="user_ids"
+            onChange={handleDropdownChange}
+            placeholder="Select User"
+          />
+          <div className="flex items-center justify-between text-xl">
+            <div className="flex items-center gap-2 py-4">
+              <div onClick={() => setMessageVisibility(!messageVisibility)}>
+                {messageVisibility ? <GoTriangleDown /> : <GoTriangleRight />}
+              </div>
+              <span className="font-bold">Recent Messages</span>
+            </div>
+          </div>
+          <div className="flex flex-col ">
+            {membersWithChatHistory?.map((items, idx) => (
+              <Link
                 className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
-                key={item.id}
-                to={`/app/c/${item.id}`}
+                key={idx}
+                to={`/app/t/${items.id}`}
                 onClick={() => {
                   setChatTarget("");
                 }}
               >
-                <span>{item.name}</span>
-              </NavLink>
+                {trimEmail(items.email)}
+              </Link>
             ))}
-          </div>
-        )}
-
-        <div className="flex items-center justify-between text-xl">
-          <div className="flex items-center gap-2 py-4">
-            <div onClick={() => setMessageVisibility(!messageVisibility)}>
-              <GoHash />
-            </div>
-            <span className="font-bold">Direct Messages</span>
-          </div>
+          </div>{" "}
         </div>
-
-        <AsyncSelect
-          className="text-black"
-          loadOptions={loadOptions}
-          isClearable
-          cacheOptions
-          // defaultOptions
-          value={chatTarget}
-          components={animatedComponents}
-          name="user_ids"
-          id="user_ids"
-          onChange={handleDropdownChange}
-          placeholder="Select User"
-        />
-
-        <div className="flex items-center justify-between text-xl">
-          <div className="flex items-center gap-2 py-4">
-            <div onClick={() => setMessageVisibility(!messageVisibility)}>
-              {messageVisibility ? <GoTriangleDown /> : <GoTriangleRight />}
-            </div>
-            <span className="font-bold">Recent Messages</span>
-          </div>
+      ) : (
+        <div className="flex items-center justify-center flex-col w-1/4 min-w-[250px] p-4 h-full bg-[#2b2d31]">
+          <PulseLoader color="#36d7b7" />
         </div>
-        <div className="flex flex-col ">
-          {membersWithChatHistory?.map((items, idx) => (
-            <NavLink
-              className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
-              key={idx}
-              to={`/app/t/${items.id}`}
-            >
-              {trimEmail(items.email)}
-            </NavLink>
-          ))}
-        </div>
-      </div>
+      )}
     </>
   );
 }
@@ -157,8 +166,16 @@ function Sidebar() {
   const [uniqueIDS, setUniqueIDS] = useState(null);
   const [globalOptions, setGlobalOptions] = useState(null);
   const [membersWithChatHistory, setMembersWithChatHistory] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
+  const header_data = getLocalStorage("headerData");
+  const loginData = getLocalStorage("LoginData");
+  const currentUserID = loginData.data.id;
+  const token = header_data?.["access-token"];
+  const client = header_data?.["client"];
+  const expiry = header_data?.["expiry"];
+  const uid = header_data?.["uid"];
   const {
     data: getChannelData,
     loading: getChannelLoading,
@@ -175,47 +192,20 @@ function Sidebar() {
     method: "GET",
   });
 
-  const {
-    data: getMessageData,
-    loading: getMessageLoading,
-    fetchAPI: getMessageFetchAPI,
-  } = useFetch(
-    `/messages?receiver_id=${chatTarget && id ? id : ""}&receiver_class=User`,
-    {
-      method: "GET",
-    }
-  );
+  // useEffect(() => {
+  //   console.log("MESSAGE DATA", getMessageData);
+  // }, [getMessageData]);
+  // useEffect(() => {
+  //   console.log("MD", getMessageData);
+  //   console.log("TARGET", chatTarget);
+  // }, [getMessageData, chatTarget]);
 
-  const header_data = getLocalStorage("headerData");
-  const loginData = getLocalStorage("LoginData");
-  const currentUserID = loginData.data.id;
-  const token = header_data?.["access-token"];
-  const client = header_data?.["client"];
-  const expiry = header_data?.["expiry"];
-  const uid = header_data?.["uid"];
-
-  function loadOptions(searchValue) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const filteredOptions = options?.filter((option) =>
-          option.label.toLowerCase().includes(searchValue.toLowerCase())
-        );
-        resolve(filteredOptions);
-      }, 500);
-    });
-  }
-
-  useEffect(() => {
-    console.log("MD", getMessageData);
-    console.log("TARGET", chatTarget);
-  }, [getMessageData, chatTarget]);
-
-  useEffect(() => {
-    if (chatTarget) {
-      console.log("AFTER APICALL", getMessageData);
-      getMessageFetchAPI();
-    }
-  }, [chatTarget]);
+  // useEffect(() => {
+  //   if (id) {
+  //     console.log("AFTER APICALL", getMessageData);
+  //     getMessageFetchAPI();
+  //   }
+  // }, [chatTarget]);
 
   function handleDropdownChange(selectedOptions) {
     setChatTarget(selectedOptions);
@@ -263,13 +253,13 @@ function Sidebar() {
       const uniqueUserIDs = Array.from(uniqueUserIDsSet);
 
       setUniqueIDS(uniqueUserIDs);
-      console.log(uniqueUserIDs);
+      console.log("MY_GLOBAL_USERS_ID", uniqueUserIDs);
 
       findUsers(getUsersData, uniqueUserIDs);
 
       const filteredMembers = findUsers(getUsersData, uniqueUserIDs);
       setGlobalOptions(filteredMembers);
-      console.log(filteredMembers);
+      console.log("MY_GLOBAL_USERS", filteredMembers);
     } catch (error) {
       console.error(error);
     }
@@ -295,9 +285,9 @@ function Sidebar() {
         const data = await response.json();
         return data;
       });
-      console.log("arrayOfPromises FOR MESSAGES", arrayOfPromises);
+      // console.log("arrayOfPromises FOR MESSAGES", arrayOfPromises);
       const accumulatedPromise = await Promise.all(arrayOfPromises);
-      console.log("accumulatedPromise FOR MESSAGES", accumulatedPromise);
+      // console.log("accumulatedPromise FOR MESSAGES", accumulatedPromise);
 
       const withHistory = accumulatedPromise
         .filter((item) => item.data.length > 0)
@@ -310,6 +300,8 @@ function Sidebar() {
               };
         });
       setMembersWithChatHistory(withHistory);
+      console.log("MEMBERS WITH HISTORY", withHistory);
+      setLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -317,6 +309,7 @@ function Sidebar() {
 
   useEffect(() => {
     if (getChannelData) {
+      setLoading(true);
       getAllChannelDetails();
     }
   }, [getChannelData]);
@@ -330,6 +323,7 @@ function Sidebar() {
   return (
     <>
       <SideBarArea
+        globalOptions={globalOptions}
         getUsersData={getUsersData}
         getUsersLoading={getUsersLoading}
         getUsersFetchAPI={getUsersFetchAPI}
@@ -340,26 +334,15 @@ function Sidebar() {
         getChannelFetchAPI={getChannelFetchAPI}
         chatTarget={chatTarget}
         setChatTarget={setChatTarget}
-        loadOptions={loadOptions}
         handleDropdownChange={handleDropdownChange}
         channelVisibility={channelVisibility}
         setChannelVisibility={setChannelVisibility}
         messageVisibility={messageVisibility}
         setMessageVisibility={setMessageVisibility}
-        getMessageData={getMessageData}
-        getMessageLoading={getMessageLoading}
-        getMessageFetchAPI={getMessageFetchAPI}
         membersWithChatHistory={membersWithChatHistory}
+        loading={loading}
       />
-      <Outlet
-        context={[
-          chatTarget,
-          getMessageData,
-          getMessageLoading,
-          getMessageFetchAPI,
-          getUsersData,
-        ]}
-      />
+      <Outlet context={[chatTarget, getUsersData]} />
     </>
   );
 }
