@@ -16,9 +16,12 @@ import {
   toastSuccess,
 } from "../../../utils";
 import { PulseLoader } from "react-spinners";
+import { EmptyChat } from "./ChannelMessageArea";
 
-function MessageInput({ chatTarget, getMessageFetchAPI }) {
+function MessageInput({ getMessageFetchAPI }) {
   const [chatData, setChatData] = useState("");
+  const { id } = useParams();
+
   const {
     data: sendChatData,
     loading: sendChatLoading,
@@ -26,14 +29,15 @@ function MessageInput({ chatTarget, getMessageFetchAPI }) {
   } = useFetch("/messages", {
     method: "POST",
     body: {
-      receiver_id: chatTarget ? chatTarget : "",
+      receiver_id: id,
       receiver_class: "User",
       body: chatData,
     },
   });
-  function handleSubmit(e) {
+
+  async function handleSubmit(e) {
     e.preventDefault();
-    if (chatTarget == false) {
+    if (id == false) {
       toastError("Recipient Missing!");
     } else if (!chatData) {
       toastError("Message Missing!");
@@ -41,15 +45,13 @@ function MessageInput({ chatTarget, getMessageFetchAPI }) {
       sendChatFetchAPI();
       setChatData("");
       toastSuccess("Message sent!");
-      getMessageFetchAPI();
+      setTimeout(getMessageFetchAPI, 200);
     }
   }
 
   // useEffect(() => {
-  //   console.log("CHAT TEXT", chatData);
-  //   console.log("CHAT DATA", sendChatData);
-  //   console.log("CHAT TARGET", chatTarget);
-  // }, [chatData, sendChatData, chatTarget]);
+  //   getMessageFetchAPI();
+  // }, [sendChatLoading]);
 
   useEffect(() => {
     if (sendChatData) {
@@ -132,14 +134,16 @@ export function NoSelectedChat() {
 }
 
 function MessageArea() {
-  const [
-    chatTarget,
-    getMessageData,
-    getMessageLoading,
-    getMessageFetchAPI,
-    getUsersData,
-  ] = useOutletContext();
+  const [chatTarget, getUsersData] = useOutletContext();
   const { id } = useParams();
+  const {
+    data: getMessageData,
+    loading: getMessageLoading,
+    fetchAPI: getMessageFetchAPI,
+  } = useFetch(`/messages?receiver_id=${id}&receiver_class=User`, {
+    method: "GET",
+  });
+
   const loginData = getLocalStorage("LoginData");
   const currentID = loginData.data.id;
 
@@ -152,12 +156,6 @@ function MessageArea() {
     getMessageFetchAPI();
   }, [id]);
 
-  useEffect(() => {
-    if (getMessageLoading) {
-      getMessageFetchAPI();
-    }
-  }, [getMessageLoading]);
-
   return (
     <>
       <div className="p-4 w-full h-full">
@@ -165,7 +163,7 @@ function MessageArea() {
           id="message_details"
           className="flex items-center w-full h-[10%] p-4 bg-[#232428] text-3xl font-semibold text-ellipsis rounded-lg"
         >
-          {!getMessageLoading && getUsersData ? (
+          {getUsersData ? (
             <span>{trimEmail(userData?.uid)}</span>
           ) : (
             <PulseLoader color="#36d7b7" />
@@ -173,12 +171,14 @@ function MessageArea() {
         </div>
 
         {
-          !getMessageLoading && getMessageData && (
+          getMessageData && (
             <div className="flex flex-col-reverse w-full h-[80%] p-4 bg-[#313338] overflow-y-auto">
-              {!id ? (
+              {!id && getMessageData.data ? (
                 <NoSelectedChat></NoSelectedChat>
+              ) : getMessageData.data.length === 0 ? (
+                <EmptyChat />
               ) : (
-                getMessageData.data
+                getMessageData?.data
                   .toReversed()
                   .map((data, idx) => (
                     <Message
@@ -196,7 +196,7 @@ function MessageArea() {
           //   <PulseLoader color="#36d7b7" />
           // )
         }
-        {!getMessageLoading && getMessageData && (
+        {getMessageData && (
           <MessageInput
             chatTarget={id}
             getMessageFetchAPI={getMessageFetchAPI}
