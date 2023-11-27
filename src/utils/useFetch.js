@@ -16,7 +16,9 @@ export function useFetch(url, config) {
     const uid = header_data?.["uid"];
     const API_URL = "http://206.189.91.54/api/v1" + url;
     try {
+      const controller = new AbortController();
       const response = await fetch(API_URL, {
+        signal: controller.signal,
         method: config.method,
         headers: {
           ...config.header,
@@ -32,6 +34,7 @@ export function useFetch(url, config) {
       const data = await response.json();
       setData(data);
       setLoading(false);
+      return () => controller.abort();
     } catch (error) {
       setError(error);
       toastError(`${error}`);
