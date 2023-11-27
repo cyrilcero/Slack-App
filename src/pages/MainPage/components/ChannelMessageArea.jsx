@@ -96,6 +96,8 @@ function MessageInput({ chatTarget, getChannelMessageFetchAPI }) {
 function AddChannelMemberModal({
   setModalVisibility,
   getChannelDetailsFetchAPI,
+  memberChange,
+  setMemberChange,
 }) {
   const [chatTarget, getUsersData] = useOutletContext();
   // const navigate = useNavigate();
@@ -117,9 +119,10 @@ function AddChannelMemberModal({
     },
   });
 
-  function handleAddChannelMember(e) {
+  async function handleAddChannelMember(e) {
     e.preventDefault();
     addChannelMemberFetchAPI();
+    setMemberChange((memberChange) => memberChange + 1);
   }
 
   function handleDropdownChange(selectedOptions) {
@@ -138,10 +141,10 @@ function AddChannelMemberModal({
     });
   }
 
-  useEffect(() => {
-    console.log(channelMember);
-    console.log("add member", addChannelMemberData);
-  }, [channelMember, addChannelMemberData]);
+  // useEffect(() => {
+  //   console.log(channelMember);
+  //   console.log("add member", addChannelMemberData);
+  // }, [channelMember, addChannelMemberData]);
 
   useEffect(() => {
     if (!addChannelMemberLoading && addChannelMemberData) {
@@ -156,17 +159,17 @@ function AddChannelMemberModal({
   }, [addChannelMemberLoading, addChannelMemberData]);
 
   return (
-    <>
-      <section className="flex justify-center items-center w-full h-full p-4 bg-[#070707]">
+    <section className="absolute left-0 top-0 w-full h-full p-4 bg-[#070707]">
+      <div className="flex w-full h-full justify-center items-center">
         <form
           className="bg-[#313338] flex flex-col w-1/2 h-auto p-8 rounded-xl "
           onSubmit={handleAddChannelMember}
         >
           <h1 className="text-3xl text-center font-bold py-4">
-            Add Channel Member
+            Add a channel member
           </h1>
           <label htmlFor="channelMember" className="py-2">
-            Select User
+            Select Member
           </label>
           <AsyncSelect
             className="mb-4 text-black"
@@ -178,7 +181,7 @@ function AddChannelMemberModal({
             name="channelMember"
             id="channelMember"
             onChange={handleDropdownChange}
-            placeholder="Add Channel Member"
+            placeholder="Select Member"
           />
           <div className="flex justify-end gap-4 pt-4">
             <button
@@ -200,8 +203,8 @@ function AddChannelMemberModal({
             </button>
           </div>
         </form>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
 
@@ -253,7 +256,8 @@ function ChannelMessageArea() {
   const [modalVisibility, setModalVisibility] = useState(false);
   const loginData = getLocalStorage("LoginData");
   const currentID = loginData.data.id;
-  const [chatTarget, getGlobalUsersData] = useOutletContext();
+  const [chatTarget, getGlobalUsersData, memberChange, setMemberChange] =
+    useOutletContext();
   const { id } = useParams();
   const {
     data: getChannelMessageData,
@@ -301,6 +305,8 @@ function ChannelMessageArea() {
         <AddChannelMemberModal
           setModalVisibility={setModalVisibility}
           getChannelDetailsFetchAPI={getChannelDetailsFetchAPI}
+          memberChange={memberChange}
+          setMemberChange={setMemberChange}
         />
       ) : (
         <div className="p-4 w-full h-full">
@@ -309,9 +315,9 @@ function ChannelMessageArea() {
             className="flex items-center justify-between w-full h-[10%] p-4 bg-[#232428] text-3xl font-semibold text-ellipsis rounded-lg"
           >
             {getChannelMessageData ? (
-              <div className="flex gap-2">
-                <span>{getChannelDetailsData.data.name}</span>
-                <div className="font-light text-gray-500 text-ellipsis">
+              <div className="flex item-center gap-2 ">
+                <span>{getChannelDetailsData?.data?.name}</span>
+                <div className="font-light h-full text-gray-500 ">
                   {findUsers(getGlobalUsersData, getChannelMembers()) || (
                     <PulseLoader color="#36d7b7" />
                   )}
