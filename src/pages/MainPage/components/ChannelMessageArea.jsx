@@ -22,11 +22,12 @@ import {
   toastError,
   toastSuccess,
 } from "../../../utils";
+import { PulseLoader } from "react-spinners";
 
 function MessageInput({ chatTarget, getChannelMessageFetchAPI }) {
   const [chatData, setChatData] = useState("");
   const {
-    data: sendChatData,
+    // data: sendChatData,
     loading: sendChatLoading,
     fetchAPI: sendChatFetchAPI,
   } = useFetch("/messages", {
@@ -96,13 +97,13 @@ function AddChannelMemberModal({
   getChannelDetailsFetchAPI,
 }) {
   const [
-    chatTarget,
-    getMessageData,
-    getMessageLoading,
-    getMessageFetchAPI,
+    // chatTarget,
+    // getMessageData,
+    // getMessageLoading,
+    // getMessageFetchAPI,
     getUsersData,
   ] = useOutletContext();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [channelMember, setChannelMember] = useState("");
   const { id } = useParams();
   const options = getUsersData?.data?.flatMap((users) => [
@@ -314,29 +315,34 @@ function ChannelMessageArea() {
         />
       ) : (
         <div className="p-4 w-full h-full">
-          {!getChannelDetailsLoading && (
-            <div
-              id="message_details"
-              className="flex items-center justify-between w-full h-[10%] p-4 bg-[#232428] text-3xl font-semibold text-ellipsis rounded-lg"
-            >
+          <div
+            id="message_details"
+            className="flex items-center justify-between w-full h-[10%] p-4 bg-[#232428] text-3xl font-semibold text-ellipsis rounded-lg"
+          >
+            {!getChannelDetailsLoading && getChannelMessageData ? (
               <div className="flex gap-2">
-                <span>{getChannelDetailsData?.data?.name}</span>
+                <span>{getChannelDetailsData.data.name}</span>
                 <div className="font-light text-gray-500 text-ellipsis">
-                  {findUsers(getUsersData, getChannelMembers())}
+                  {findUsers(getUsersData, getChannelMembers()) || (
+                    <PulseLoader color="#36d7b7" />
+                  )}
                 </div>
               </div>
+            ) : (
+              <PulseLoader color="#36d7b7" />
+            )}
 
-              <div className="bg-[#2b2d31] p-2 rounded-lg">
-                <GoPlus onClick={() => setModalVisibility(true)} />
-              </div>
+            <div className="bg-[#2b2d31] p-2 rounded-lg">
+              <GoPlus onClick={() => setModalVisibility(true)} />
             </div>
-          )}
+          </div>
+
           {!getChannelDetailsLoading && getChannelMessageData && (
             <div className="flex flex-col-reverse w-full h-[80%] p-4 bg-[#313338] overflow-y-auto">
               {getChannelMessageData.data.length === 0 ? (
                 <EmptyChat></EmptyChat>
               ) : (
-                getChannelMessageData?.data
+                getChannelMessageData.data
                   .toReversed()
                   .map((data, idx) => (
                     <Message
@@ -351,7 +357,7 @@ function ChannelMessageArea() {
             </div>
           )}
 
-          {!getChannelDetailsLoading && (
+          {!getChannelDetailsLoading && getChannelMessageData && (
             <MessageInput
               chatTarget={id}
               getChannelMessageFetchAPI={getChannelMessageFetchAPI}
