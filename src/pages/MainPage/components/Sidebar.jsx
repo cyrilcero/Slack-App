@@ -133,9 +133,13 @@ function SideBarArea({
             <span className="font-bold">Recent Messages</span>
           </div>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col ">
           {membersWithChatHistory?.map((items, idx) => (
-            <NavLink key={idx} to={`/app/t/${items.id}`}>
+            <NavLink
+              className="pl-2 py-1 hover:bg-slate-400 rounded-lg w-full"
+              key={idx}
+              to={`/app/t/${items.id}`}
+            >
               {trimEmail(items.email)}
             </NavLink>
           ))}
@@ -182,6 +186,14 @@ function Sidebar() {
     }
   );
 
+  const header_data = getLocalStorage("headerData");
+  const loginData = getLocalStorage("LoginData");
+  const currentUserID = loginData.data.id;
+  const token = header_data?.["access-token"];
+  const client = header_data?.["client"];
+  const expiry = header_data?.["expiry"];
+  const uid = header_data?.["uid"];
+
   function loadOptions(searchValue) {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -214,47 +226,6 @@ function Sidebar() {
     }
   }
 
-  // console.log("ALL CHANNELS", allChannels);
-  // const {
-  //   data: getChannelDetailsData,
-  //   individualFetchAPI: getChannelDetailsFetchAPI,
-  // } = useIndividualFetch();
-
-  // const [memberData, setMemberData] = useState([]);
-
-  // async function getAllMembers() {
-  //   const allChannels = getChannelData.data.map((channel) => channel.id);
-  //   allChannels.forEach((item) => {
-  //     getChannelDetailsFetchAPI(`/channels/${item}`, { method: "GET" });
-
-  //     console.log("CH data", getChannelDetailsData);
-
-  //     if (getChannelDetailsData) {
-  //       setMemberData((prev) => ({
-  //         ...prev,
-  //         getChannelDetailsData,
-  //       }));
-
-  //     }
-  //     console.log("MEM DATA", memberData);
-  //   });
-  //   return memberData;
-  // }
-
-  // async function arrayMembers() {
-  //   const member = await getAllMembers();
-  // console.log("MEMBER DATA", member);
-  // const memberIDS = memberData.map((mem) => mem.data.id);
-  // console.log("IDS", memberIDS);
-  // return memberIDS;
-  // }
-
-  // useEffect(() => {
-  //   if (getChannelData) {
-  //     arrayMembers();
-  //   }
-  // }, []);
-
   function findUsers(usersData, array) {
     const users = usersData?.data
       .filter((item) => array?.includes(item.id))
@@ -262,15 +233,6 @@ function Sidebar() {
 
     return users;
   }
-
-  const header_data = getLocalStorage("headerData");
-  const loginData = getLocalStorage("LoginData");
-  const currentUserID = loginData.data.id;
-  const currentUserEmail = loginData.data.email;
-  const token = header_data?.["access-token"];
-  const client = header_data?.["client"];
-  const expiry = header_data?.["expiry"];
-  const uid = header_data?.["uid"];
 
   async function getAllChannelDetails() {
     const allChannelID = getChannelData.data.map((channel) => channel.id);
@@ -357,13 +319,13 @@ function Sidebar() {
     if (getChannelData) {
       getAllChannelDetails();
     }
-  }, []);
+  }, [getChannelData]);
 
   useEffect(() => {
     if (uniqueIDS) {
       getRecentMessages();
     }
-  }, []);
+  }, [uniqueIDS]);
 
   return (
     <>
