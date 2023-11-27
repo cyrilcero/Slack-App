@@ -253,7 +253,7 @@ function ChannelMessageArea() {
   const [modalVisibility, setModalVisibility] = useState(false);
   const loginData = getLocalStorage("LoginData");
   const currentID = loginData.data.id;
-  const [chatTarget, getUsersData] = useOutletContext();
+  const [chatTarget, getGlobalUsersData] = useOutletContext();
   const { id } = useParams();
   const {
     data: getChannelMessageData,
@@ -280,8 +280,8 @@ function ChannelMessageArea() {
   }, [getChannelDetailsData]);
 
   useEffect(() => {
-    console.log("USERS DATA", getUsersData);
-  }, [getUsersData]);
+    console.log("USERS DATA", getGlobalUsersData);
+  }, [getGlobalUsersData]);
 
   function getChannelMembers() {
     const members = getChannelDetailsData?.data?.channel_members?.map(
@@ -316,7 +316,7 @@ function ChannelMessageArea() {
               <div className="flex gap-2">
                 <span>{getChannelDetailsData.data.name}</span>
                 <div className="font-light text-gray-500 text-ellipsis">
-                  {findUsers(getUsersData, getChannelMembers()) || (
+                  {findUsers(getGlobalUsersData, getChannelMembers()) || (
                     <PulseLoader color="#36d7b7" />
                   )}
                 </div>
