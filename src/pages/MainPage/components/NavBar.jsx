@@ -70,12 +70,6 @@ export function NavBar() {
           to={"/app"}
           logo={<GoDiscussionClosed />}
         />
-        <NavBarItems
-          id="2"
-          name="All Users"
-          to={"/app/all-users"}
-          logo={<GoListOrdered />}
-        />
         {/* <NavBarItems to={"/app/create-channel"} logo={<GoPlus />} /> */}
       </div>
       <div className="flex flex-col gap-2 justify-center items-center">
