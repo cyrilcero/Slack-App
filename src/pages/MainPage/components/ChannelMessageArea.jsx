@@ -98,6 +98,7 @@ function AddChannelMemberModal({
   getChannelDetailsFetchAPI,
   memberChange,
   setMemberChange,
+  getChannelFetchAPI,
 }) {
   const [chatTarget, getUsersData] = useOutletContext();
   // const navigate = useNavigate();
@@ -123,6 +124,7 @@ function AddChannelMemberModal({
     e.preventDefault();
     addChannelMemberFetchAPI();
     setMemberChange((memberChange) => memberChange + 1);
+    getChannelFetchAPI();
   }
 
   function handleDropdownChange(selectedOptions) {
@@ -256,8 +258,13 @@ function ChannelMessageArea() {
   const [modalVisibility, setModalVisibility] = useState(false);
   const loginData = getLocalStorage("LoginData");
   const currentID = loginData.data.id;
-  const [chatTarget, getGlobalUsersData, memberChange, setMemberChange] =
-    useOutletContext();
+  const [
+    chatTarget,
+    getGlobalUsersData,
+    memberChange,
+    setMemberChange,
+    getChannelFetchAPI,
+  ] = useOutletContext();
   const { id } = useParams();
   const {
     data: getChannelMessageData,
@@ -307,6 +314,7 @@ function ChannelMessageArea() {
           getChannelDetailsFetchAPI={getChannelDetailsFetchAPI}
           memberChange={memberChange}
           setMemberChange={setMemberChange}
+          getChannelFetchAPI={getChannelFetchAPI}
         />
       ) : (
         <div className="p-4 w-full h-full">
