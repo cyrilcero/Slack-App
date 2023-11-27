@@ -49,6 +49,7 @@ function MessageInput({ chatTarget, getChannelMessageFetchAPI }) {
       sendChatFetchAPI();
       setChatData("");
       toastSuccess("Message sent!");
+      setTimeout(getChannelMessageFetchAPI, 200);
     }
   }
 
@@ -61,9 +62,9 @@ function MessageInput({ chatTarget, getChannelMessageFetchAPI }) {
   //   }, [sendChatData]);
 
   // run fetch para magbago yung state during loading state
-  useEffect(() => {
-    getChannelMessageFetchAPI();
-  }, [sendChatLoading]);
+  // useEffect(() => {
+  //   getChannelMessageFetchAPI();
+  // }, [sendChatLoading]);
 
   return (
     <Form
@@ -96,13 +97,7 @@ function AddChannelMemberModal({
   setModalVisibility,
   getChannelDetailsFetchAPI,
 }) {
-  const [
-    // chatTarget,
-    // getMessageData,
-    // getMessageLoading,
-    // getMessageFetchAPI,
-    getUsersData,
-  ] = useOutletContext();
+  const [chatTarget, getUsersData] = useOutletContext();
   // const navigate = useNavigate();
   const [channelMember, setChannelMember] = useState("");
   const { id } = useParams();
@@ -258,13 +253,7 @@ function ChannelMessageArea() {
   const [modalVisibility, setModalVisibility] = useState(false);
   const loginData = getLocalStorage("LoginData");
   const currentID = loginData.data.id;
-  const [
-    chatTarget,
-    getMessageData,
-    getMessageLoading,
-    getMessageFetchAPI,
-    getUsersData,
-  ] = useOutletContext();
+  const [chatTarget, getUsersData] = useOutletContext();
   const { id } = useParams();
   const {
     data: getChannelMessageData,
@@ -286,9 +275,13 @@ function ChannelMessageArea() {
     getChannelDetailsFetchAPI();
   }, [id]);
 
-  // useEffect(() => {
-  //   getChannelDetailsFetchAPI();
-  // }, [getChannelMessageData]);
+  useEffect(() => {
+    console.log("CH DETS DATA", getChannelDetailsData);
+  }, [getChannelDetailsData]);
+
+  useEffect(() => {
+    console.log("USERS DATA", getUsersData);
+  }, [getUsersData]);
 
   function getChannelMembers() {
     const members = getChannelDetailsData?.data?.channel_members?.map(
@@ -340,7 +333,7 @@ function ChannelMessageArea() {
           {!getChannelDetailsLoading && getChannelMessageData && (
             <div className="flex flex-col-reverse w-full h-[80%] p-4 bg-[#313338] overflow-y-auto">
               {getChannelMessageData.data.length === 0 ? (
-                <EmptyChat></EmptyChat>
+                <EmptyChat />
               ) : (
                 getChannelMessageData.data
                   .toReversed()
