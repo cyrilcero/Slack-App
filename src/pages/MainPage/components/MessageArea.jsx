@@ -15,6 +15,7 @@ import {
   toastError,
   toastSuccess,
 } from "../../../utils";
+import { PulseLoader } from "react-spinners";
 
 function MessageInput({ chatTarget, getMessageFetchAPI }) {
   const [chatData, setChatData] = useState("");
@@ -160,35 +161,47 @@ function MessageArea() {
   return (
     <>
       <div className="p-4 w-full h-full">
-        {getUsersData && (
-          <div
-            id="message_details"
-            className="flex items-center w-full h-[10%] p-4 bg-[#232428] text-3xl font-semibold text-ellipsis rounded-lg"
-          >
-            {trimEmail(userData?.uid)}
-          </div>
-        )}
-        {!getMessageLoading && getMessageData && (
-          <div className="flex flex-col-reverse w-full h-[80%] p-4 bg-[#313338] overflow-y-auto">
-            {!id ? (
-              <NoSelectedChat></NoSelectedChat>
-            ) : (
-              (getMessageData.data || [])
-                .toReversed()
-                .map((data, idx) => (
-                  <Message
-                    key={idx}
-                    message={data.body}
-                    time={formatDate(data.created_at)}
-                    user={trimEmail(data.sender.uid)}
-                    sender={currentID === data.sender.id ? false : true}
-                  />
-                ))
-            )}
-          </div>
-        )}
+        <div
+          id="message_details"
+          className="flex items-center w-full h-[10%] p-4 bg-[#232428] text-3xl font-semibold text-ellipsis rounded-lg"
+        >
+          {!getMessageLoading && getUsersData ? (
+            <span>{trimEmail(userData?.uid)}</span>
+          ) : (
+            <PulseLoader color="#36d7b7" />
+          )}
+        </div>
 
-        <MessageInput chatTarget={id} getMessageFetchAPI={getMessageFetchAPI} />
+        {
+          !getMessageLoading && getMessageData && (
+            <div className="flex flex-col-reverse w-full h-[80%] p-4 bg-[#313338] overflow-y-auto">
+              {!id ? (
+                <NoSelectedChat></NoSelectedChat>
+              ) : (
+                getMessageData.data
+                  .toReversed()
+                  .map((data, idx) => (
+                    <Message
+                      key={idx}
+                      message={data.body}
+                      time={formatDate(data.created_at)}
+                      user={trimEmail(data.sender.uid)}
+                      sender={currentID === data.sender.id ? false : true}
+                    />
+                  ))
+              )}
+            </div>
+          )
+          // : (
+          //   <PulseLoader color="#36d7b7" />
+          // )
+        }
+        {!getMessageLoading && getMessageData && (
+          <MessageInput
+            chatTarget={id}
+            getMessageFetchAPI={getMessageFetchAPI}
+          />
+        )}
       </div>
     </>
   );
