@@ -9,16 +9,17 @@ import "./index.css";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import SignUpPage from "./pages/SignUpPage/SignUpPage";
 import MainPage from "./pages/MainPage/MainPage";
-import Sidebar from "./pages/MainPage/components/Sidebar.jsx";
+import Sidebar from "./pages/MainPage/components/Sidebar";
 import AllUsers from "./pages/MainPage/components/AllUsers";
-import CreateChannel from "./pages/MainPage/components/CreateChannel.jsx";
+import CreateChannel from "./pages/MainPage/components/CreateChannel";
 import { ProtectedRoute, LoggedInRoute } from "./utils";
 import MessageArea, {
   NoSelectedChat,
-} from "./pages/MainPage/components/MessageArea.jsx";
-import ChannelMessageArea from "./pages/MainPage/components/ChannelMessageArea.jsx";
-import ErrorPage from "./pages/ErrorPage/ErrorPage.jsx";
-import { Logout } from "./pages/MainPage/components/NavBar.jsx";
+} from "./pages/MainPage/components/MessageArea";
+import ChannelMessageArea from "./pages/MainPage/components/ChannelMessageArea";
+import ErrorPage from "./pages/ErrorPage/ErrorPage";
+import { Logout } from "./pages/MainPage/components/NavBar";
+import FAQ from "./pages/FAQPage/FAQ";
 
 const routes = createBrowserRouter([
   {
@@ -90,6 +91,11 @@ const routes = createBrowserRouter([
         <Logout />
       </ProtectedRoute>
     ),
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/faq",
+    element: <FAQ />,
     errorElement: <ErrorPage />,
   },
 ]);
