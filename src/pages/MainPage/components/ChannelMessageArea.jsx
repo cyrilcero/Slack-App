@@ -286,9 +286,9 @@ function ChannelMessageArea() {
     getChannelDetailsFetchAPI();
   }, [id]);
 
-  useEffect(() => {
-    console.log("USERS DATA", getGlobalUsersData);
-  }, [getGlobalUsersData]);
+  // useEffect(() => {
+  //   console.log("USERS DATA", getGlobalUsersData);
+  // }, [getGlobalUsersData]);
 
   function getChannelMembers() {
     const members = getChannelDetailsData?.data?.channel_members?.map(

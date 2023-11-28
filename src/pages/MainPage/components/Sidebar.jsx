@@ -157,8 +157,10 @@ function SideBarArea({
                 ))}
               </div>
             )
-          ) : (
+          ) : membersWithChatHistory?.length > 0 ? (
             <PulseLoader color="#36d7b7" />
+          ) : (
+            ""
           )}
         </div>
       ) : (
@@ -247,7 +249,7 @@ function Sidebar() {
       500
     );
     getDropDownOptions();
-    console.log("MEMBER CHANGE", memberChange);
+    // console.log("MEMBER CHANGE", memberChange);
   }, [memberChange]);
 
   useEffect(() => {
@@ -313,13 +315,13 @@ function Sidebar() {
         const uniqueUserIDsSet = new Set(flattenedAllUserIDS);
         const uniqueUserIDs = Array.from(uniqueUserIDsSet);
         setUniqueIDS(uniqueUserIDs);
-        console.log("uniqueUserIDs", uniqueUserIDs);
+        // console.log("uniqueUserIDs", uniqueUserIDs);
 
         const filteredMembers = await findUsers(getGlobalUsersData, uniqueIDS);
         setGlobalOptions(filteredMembers);
 
-        console.log("filteredMembers", filteredMembers);
-        console.log("getAllChannelDetails");
+        // console.log("filteredMembers", filteredMembers);
+        // console.log("getAllChannelDetails");
       } catch (error) {
         console.error(error);
       }
@@ -329,8 +331,8 @@ function Sidebar() {
   async function getDropDownOptions() {
     const filteredMembers = await findUsers(getGlobalUsersData, uniqueIDS);
     setGlobalOptions(filteredMembers);
-    console.log("filteredMembers", filteredMembers);
-    console.log("getAllChannelDetails");
+    // console.log("filteredMembers", filteredMembers);
+    // console.log("getAllChannelDetails");
   }
 
   async function getRecentMessages() {
@@ -368,7 +370,7 @@ function Sidebar() {
               };
         });
       setMembersWithChatHistory(withHistory);
-      console.log("getRecentMessages");
+      // console.log("getRecentMessages");
       setLoading(false);
     } catch (error) {
       console.error(error);
